@@ -4,7 +4,7 @@
 
 Para desenvolver a arquitetura, partimos do cenário apresentado para a TechPay e também do ambiente que realmente utilizaria nas etapas seguintes da avaliação. Por isso, procuramos não criar uma infraestrutura mais complexa do que o necessário. 
 
-A ideia foi representar desde a origem das transações até o momento em que os dados se transformam em informações para apoiar a análise de fraude. No início do fluxo estão os quatro canais apresentados no problema: App, Web, POS e ATM. Em uma situação real, esses canais seriam responsáveis pela geração das transações da TechPay. Para esta atividade, porém, essas informações já foram disponibilizadas de forma consolidada no arquivo avaliacao_transactions.csv, com 30 mil transações realizadas ao longo de 2025. Por esse motivo, representamos no diagrama tanto os canais que originam os dados quanto o arquivo que efetivamente utilizei no trabalho.
+A ideia foi representar desde a origem das transações até o momento em que os dados se transformam em informações para apoiar a análise de fraude. No início do fluxo estão os quatro canais apresentados no problema: App, Web, POS e ATM. Em uma situação real, esses canais seriam responsáveis pela geração das transações da TechPay. Por este motivo representamos no diagrama tanto os canais que originam os dados quanto o arquivo que efeteivamente utilizamos no trabalho. 
 
 ## Ingestão e processamento
 
