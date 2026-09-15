@@ -27,7 +27,7 @@ Ação: a área de risco poderia utilizar essa informação para priorizar o mon
 
 ## Risco por canal
 
-Na segunda análise, comparei os diferentes canais utilizados nas transações: app, web, POS e ATM.
+Na segunda análise, comparamos os diferentes canais utilizados nas transações: app, web, POS e ATM.
 Os resultados foram: 
 
 | Canal | Transações | Fraudes | Taxa de fraude |
@@ -67,10 +67,10 @@ Utilizaria essa categoria como um dos critérios para aprofundar a análise, pri
 
 Para verificar se havia algum comportamento de fraude relacionado ao tempo, analisamos inicialmente a taxa mensal.Os resultados permaneceram relativamente estáveis ao longo do ano, variando aproximadamente entre 2,08% e 2,80%. O menor resultado ocorreu em setembro, com cerca de 2,08%, enquanto dezembro apresentou aproximadamente 2,80%.
 Isso indica que não existe uma mudança mensal muito brusca no conjunto analisado. Portanto, apenas o mês não parece ser suficiente para identificar um padrão forte de fraude.
-Quando passamos para uma análise mais detalhada por hora, encontrei uma diferença mais interessante.
+Quando passamos para uma análise mais detalhada por hora, encontramos uma diferença mais interessante.
 A faixa de 1 hora da manhã apresentou taxa de fraude de aproximadamente 4,46%, a maior entre os horários analisados.
 Outros horários da madrugada, como 3h e 4h, também apareceram entre os valores mais altos.
-A interpretação é que o horário parece trazer uma informação mais útil do que o mês para esse conjunto de dados. Mesmo assim, eu evitaria afirmar que qualquer operação de madrugada é suspeita. O horário deve ser analisado junto com outras características da transação.
+A interpretação é que o horário parece trazer uma informação mais útil do que o mês para esse conjunto de dados. Mesmo assim, evitaríamos afirmar que qualquer operação de madrugada é suspeita. O horário deve ser analisado junto com outras características da transação.
 
 Após essa analise, nos questionamos em quais combinações de canal e categoria de estabelecimento a TechPay deveria concentrar primeiro sua investigação de fraude?
 
