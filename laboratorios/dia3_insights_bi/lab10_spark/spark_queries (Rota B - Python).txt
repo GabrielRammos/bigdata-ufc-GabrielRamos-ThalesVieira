@@ -1,0 +1,242 @@
+claudlx@CLAUDENILSON:~$ pip install pyspark --user
+Requirement already satisfied: pyspark in /usr/local/lib/python3.10/dist-packages (4.2.0)
+Requirement already satisfied: py4j<0.10.9.10,>=0.10.9.7 in /usr/local/lib/python3.10/dist-packages (from pyspark) (0.10.9.9)
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from pyspark.sql import SparkSession
+>>> spark = SparkSession.builder.appName("lab10").master("local[*]").getOrCreate()
+26/09/14 10:18:14 WARN Utils: Your hostname, CLAUDENILSON resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instead (on interface lo)
+26/09/14 10:18:14 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/09/14 10:18:15 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/pyspark/sql/session.py", line 562, in getOrCreate
+    session = SparkSession(sc, options=self._options)
+  File "/usr/local/lib/python3.10/dist-packages/pyspark/sql/session.py", line 660, in __init__
+    jSparkSessionClass.getDefaultSession().isDefined()
+TypeError: 'JavaPackage' object is not callable
+>>> exit()
+claudlx@CLAUDENILSON:~$ spark-shell --version
+26/09/14 10:26:35 WARN Utils: Your hostname, CLAUDENILSON resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instead (on interface lo)
+26/09/14 10:26:35 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.5.0
+      /_/
+
+Using Scala version 2.12.18, OpenJDK 64-Bit Server VM, 1.8.0_502
+Branch HEAD
+Compiled by user ubuntu on 2023-09-09T01:53:20Z
+Revision ce5ddad990373636e94071e7cef2f31021add07b
+Url https://github.com/apache/spark
+Type --help for more information.
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> exit()
+claudlx@CLAUDENILSON:~$ pip show pyspark
+Name: pyspark
+Version: 4.2.0
+Summary: Apache Spark Python API
+Home-page: https://github.com/apache/spark/tree/master/python
+Author: Spark Developers
+Author-email: dev@spark.apache.org
+License: Apache-2.0
+Location: /usr/local/lib/python3.10/dist-packages
+Requires: py4j
+Required-by:
+claudlx@CLAUDENILSON:~$ sudo apt install openjdk-11-jdk
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+[sudo] password for claudlx:
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+openjdk-11-jdk is already the newest version (11.0.32+9-1ubuntu1~22.04).
+0 upgraded, 0 newly installed, 0 to remove and 12 not upgraded.
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from pyspark.sql import SparkSession
+>>> spark = SparkSession.builder.appName("lab10").master("local[*]").getOrCreate()
+26/09/14 10:30:42 WARN Utils: Your hostname, CLAUDENILSON resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instead (on interface lo)
+26/09/14 10:30:42 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/09/14 10:30:45 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/pyspark/sql/session.py", line 562, in getOrCreate
+    session = SparkSession(sc, options=self._options)
+  File "/usr/local/lib/python3.10/dist-packages/pyspark/sql/session.py", line 660, in __init__
+    jSparkSessionClass.getDefaultSession().isDefined()
+TypeError: 'JavaPackage' object is not callable
+>>> pip install --upgrade pyspark==3.5.0
+  File "<stdin>", line 1
+    pip install --upgrade pyspark==3.5.0
+        ^^^^^^^
+SyntaxError: invalid syntax
+>>> exit()
+claudlx@CLAUDENILSON:~$ pip install --upgrade pyspark==3.5.0
+Defaulting to user installation because normal site-packages is not writeable
+Collecting pyspark==3.5.0
+  Downloading pyspark-3.5.0.tar.gz (316.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 316.9/316.9 MB 980.5 kB/s eta 0:00:00
+  Preparing metadata (setup.py) ... done
+Collecting py4j==0.10.9.7
+  Downloading py4j-0.10.9.7-py2.py3-none-any.whl (200 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200.5/200.5 KB 6.9 MB/s eta 0:00:00
+Building wheels for collected packages: pyspark
+  Building wheel for pyspark (setup.py) ... done
+  Created wheel for pyspark: filename=pyspark-3.5.0-py2.py3-none-any.whl size=317425364 sha256=16e4c8fc6c8f475957021f95d68d4964cbb31832ed4e7b29b3f605af937af7f4
+  Stored in directory: /home/claudlx/.cache/pip/wheels/41/4e/10/c2cf2467f71c678cfc8a6b9ac9241e5e44a01940da8fbb17fc
+Successfully built pyspark
+Installing collected packages: py4j, pyspark
+Successfully installed py4j-0.10.9.7 pyspark-3.5.0
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from pyspark.sql import SparkSession
+>>> spark = SparkSession.builder.appName("lab10").getOrCreate()
+26/09/14 10:36:00 WARN Utils: Your hostname, CLAUDENILSON resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instead (on interface lo)
+26/09/14 10:36:00 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/09/14 10:36:01 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+>>> df = spark.read.parquet("bigdata/silver/transactions_enriched.parquet")
+>>> df.printSchema()
+root
+ |-- transaction_id: long (nullable = true)
+ |-- customer_id: long (nullable = true)
+ |-- amount: float (nullable = true)
+ |-- transaction_type: string (nullable = true)
+ |-- status: string (nullable = true)
+ |-- risk_score: float (nullable = true)
+ |-- is_fraud: boolean (nullable = true)
+ |-- ts: timestamp_ntz (nullable = true)
+ |-- segment: string (nullable = true)
+ |-- credit_score: integer (nullable = true)
+ |-- year: long (nullable = true)
+ |-- month: long (nullable = true)
+ |-- day: long (nullable = true)
+ |-- day_of_week: long (nullable = true)
+ |-- amount_band: string (nullable = true)
+
+>>> df.show(5)
+df.createOrReplaceTempView("silver_transactions")
++--------------+-----------+---------+----------------+--------+----------+--------+-------------------+--------+------------+----+-----+---+-----------+-----------+
+|transaction_id|customer_id|   amount|transaction_type|  status|risk_score|is_fraud|                 ts| segment|credit_score|year|month|day|day_of_week|amount_band|
++--------------+-----------+---------+----------------+--------+----------+--------+-------------------+--------+------------+----+-----+---+-----------+-----------+
+|         50637|       2439|135.57674|          compra|approved| 14.818251|   false|2024-12-23 00:00:00| Premium|         570|2024|   12| 23|          1|      medio|
+|         30062|        374| 71.61096|       pagamento|declined| 0.6111798|   false|2024-12-23 00:00:00|Standard|         591|2024|   12| 23|          1|      baixo|
+|         61943|       5234| 44.01125|          compra|approved|  73.63765|   false|2024-12-23 00:00:00| Premium|         649|2024|   12| 23|          1|      baixo|
+|         96440|        547| 54.42912|          compra|approved| 4.6679425|   false|2024-12-23 00:00:00| Premium|         749|2024|   12| 23|          1|      baixo|
+|         18317|       4017|     10.0|          compra|approved| 21.491629|   false|2024-12-23 00:00:00|Standard|         766|2024|   12| 23|          1|      baixo|
++--------------+-----------+---------+----------------+--------+----------+--------+-------------------+--------+------------+----+-----+---+-----------+-----------+
+only showing top 5 rows
+
+>>> df.createOrReplaceTempView("silver_transactions")
+>>> spark.sql("""
+LECT segment, ROUND(AVG(credit_score), 1) AS score_medio, COUNT(... SELECT segment, ROUND(AVG(credit_score), 1) AS score_medio, COUNT(*) AS total
+... FROM silver_transactions
+... GROUP BY segment
+... ORDER BY score_medio
+... """).show()
++---------+-----------+-----+
+|  segment|score_medio|total|
++---------+-----------+-----+
+| Standard|      643.9|29689|
+|  Premium|      652.7|61156|
+|High-Risk|      659.8| 9155|
++---------+-----------+-----+
+
+>>> from pyspark.sql import functions as F
+>>>
+>>> (df.groupBy("segment")
+...    .agg(F.round(F.avg("credit_score"), 1).alias("score_medio"),
+...         F.count("*").alias("total"))
+...    .orderBy("score_medio")
+...    .show())
++---------+-----------+-----+
+|  segment|score_medio|total|
++---------+-----------+-----+
+| Standard|      643.9|29689|
+|  Premium|      652.7|61156|
+|High-Risk|      659.8| 9155|
++---------+-----------+-----+
+
+>>> import time
+aud == True).count()
+print("1ª vez (sem cache):", time.time() - t0, "s")
+
+df.cac>>>
+>>> t0 = time.time()
+ # força o cache a materializar
+
+t0 = time.time(>>> df.filter(df.is_fraud == True).count()
+s_fraud == True).count()
+print("2ª vez (com cache):", time.time() - t0, "s")1833
+>>> print("1ª vez (sem cache):", time.time() - t0, "s")
+1ª vez (sem cache): -0.016756534576416016 s
+>>>
+>>> df.cache()
+DataFrame[transaction_id: bigint, customer_id: bigint, amount: float, transaction_type: string, status: string, risk_score: float, is_fraud: boolean, ts: timestamp_ntz, segment: string, credit_score: int, year: bigint, month: bigint, day: bigint, day_of_week: bigint, amount_band: string]
+>>> df.count()  # força o cache a materializar
+100000
+>>>
+>>> t0 = time.time()
+>>> df.filter(df.is_fraud == True).count()
+1833
+>>> print("2ª vez (com cache):", time.time() - t0, "s")
+2ª vez (com cache): 3.8857908248901367 s
+>>> t0 = time.time()
+_fraud == True).count()
+print("1ª vez (sem cache):", time.time() - t0, "s")>>> df.filter(df.is_fraud == True).count()
+1833
+>>> print("1ª vez (sem cache):", time.time() - t0, "s")
+1ª vez (sem cache): 1.9443354606628418 s
+>>> df.cache()
+unt()26/09/14 10:39:18 WARN CacheManager: Asked to cache already cached data.
+DataFrame[transaction_id: bigint, customer_id: bigint, amount: float, transaction_type: string, status: string, risk_score: float, is_fraud: boolean, ts: timestamp_ntz, segment: string, credit_score: int, year: bigint, month: bigint, day: bigint, day_of_week: bigint, amount_band: string]
+>>> df.count()
+100000
+>>> t0 = time.time()
+_fraud == True).count()
+print("2ª vez (com cache>>> df.filter(df.is_fraud == True).count()
+):", time.time() - t0, "s")1833
+>>> print("2ª vez (com cache):", time.time() - t0, "s")
+2ª vez (com cache): -0.008679628372192383 s
+>>>
+>>>
+>>>
+>>> spark.sql("""
+LECT dayofweek(ts) AS dia_semana,
+       COUNT(*) AS total,
+       SUM(CASE WHEN is_fraud THEN 1 ELSE 0 END) AS fraudes
+FROM silver_transactions... SELECT dayofweek(ts) AS dia_semana,
+...        COUNT(*) AS total,
+eek(ts)
+ORDER BY dia_semana
+""").show()...        SUM(CASE WHEN is_fraud THEN 1 ELSE 0 END) AS fraudes
+... FROM silver_transactions
+... GROUP BY dayofweek(ts)
+... ORDER BY dia_semana
+... """).show()
++----------+-----+-------+
+|dia_semana|total|fraudes|
++----------+-----+-------+
+|         1|14034|    257|
+|         2|13940|    283|
+|         3|14222|    262|
+|         4|14338|    234|
+|         5|14452|    263|
+|         6|14484|    261|
+|         7|14530|    273|
++----------+-----+-------+
+
+>>>

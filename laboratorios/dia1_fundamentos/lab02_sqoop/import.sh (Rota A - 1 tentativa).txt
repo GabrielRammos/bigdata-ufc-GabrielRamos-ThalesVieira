@@ -1,0 +1,172 @@
+Microsoft Windows [versão 10.0.26200.9445]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 6.18.33.2-microsoft-standard-WSL2 x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Thu Sep 10 16:05:36 -03 2026
+
+  System load:  1.51                Processes:             60
+  Usage of /:   0.9% of 1006.85GB   Users logged in:       0
+  Memory usage: 22%                 IPv4 address for eth0: 172.20.184.193
+  Swap usage:   0%
+
+ * Canonical Workshop gives developers fast, composable, reproducible, and
+   secure developer environments that are perfect for agentic workflows.
+
+   https://ubuntu.com/workshop
+
+This message is shown once a day. To disable it please create the
+/home/claudlx/.hushlogin file.
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home
+claudlx@CLAUDENILSON:/home$ cd claudlx
+claudlx@CLAUDENILSON:~$ sudo mysql -u root << 'EOF'
+CREATE DATABASE IF NOT EXISTS bigdata_course;
+USE bigdata_course;
+
+CREATE TABLE customers (
+  customer_id INT PRIMARY KEY, name VARCHAR(255), cpf VARCHAR(20),
+  email VARCHAR(255), segment VARCHAR(50), credit_score INT, created_at DATE
+);
+CREATE TABLE transactions (
+  transaction_id INT PRIMARY KEY, customer_id INT, amount FLOAT,
+  transaction_type VARCHAR(50), timestamp DATETIME, status VARCHAR(50),
+  risk_score FLOAT, is_fraud VARCHAR(10)
+);
+EOF
+[sudo] password for claudlx:
+claudlx@CLAUDENILSON:~$ sudo mysql --local-infile=1 -u root bigdata_course -e "
+LOAD DATA LOCAL INFILE 'customers_synthetic.csv'
+INTO TABLE customers FIELDS TERMINATED BY ',' IGNORE 1 ROWS;"
+
+sudo mysql --local-infile=1 -u root bigdata_course -e "
+LOAD DATA LOCAL INFILE 'transactions_synthetic.csv'
+INTO TABLE transactions FIELDS TERMINATED BY ',' IGNORE 1 ROWS;"
+ERROR 3948 (42000) at line 2: Loading local data is disabled; this must be enabled on both the client and server sides
+ERROR 3948 (42000) at line 2: Loading local data is disabled; this must be enabled on both the client and server sides
+claudlx@CLAUDENILSON:~$ sudo mysql --local-infile=1 -u root bigdata_course
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 11
+Server version: 8.0.46-0ubuntu0.22.04.3 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> SET GLOBAL local_infile = 1;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> sudo mysql --local-infile=1 -u root bigdata_course -e "
+    "> LOAD DATA LOCAL INFILE 'customers_synthetic.csv'
+    "> BLE customers FIINTO TABLE customers FIELDS TERMINATED BY ',' IGNORE 1 ROWS;"
+    -> ql --local-infil
+    -> sudo mysql --local-infile=1 -u root bigdata_course -e "
+    "> LOAD DATA LOCAL INFILE 'transactions_synthetic.csv'
+ransactions FIEL    "> INTO TABLE transactions FIELDS TERMINATED BY ',' IGNORE 1 ROWS;"
+[1]+  Stopped                 sudo mysql --local-infile=1 -u root bigdata_course
+claudlx@CLAUDENILSON:~$ sudo mysql --local-infile=1 -u root bigdata_course -e "
+LOAD DATA LOCAL INFILE 'customers_synthetic.csv'
+INTO TABLE customers FIELDS TERMINATED BY ',' IGNORE 1 ROWS;"
+
+sudo mysql --local-infile=1 -u root bigdata_course -e "
+LOAD DATA LOCAL INFILE 'transactions_synthetic.csv'
+INTO TABLE transactions FIELDS TERMINATED BY ',' IGNORE 1 ROWS;"
+claudlx@CLAUDENILSON:~$ sudo mysql -u root bigdata_course -e "SELECT COUNT(*) FROM customers;"
+sudo mysql -u root bigdata_course -e "SELECT COUNT(*) FROM transactions;"
++----------+
+| COUNT(*) |
++----------+
+|     9993 |
++----------+
++----------+
+| COUNT(*) |
++----------+
+|   100000 |
++----------+
+claudlx@CLAUDENILSON:~$ sudo mysql -u root bigdata_course -e "SELECT is_fraud, COUNT(*) FROM transactions GROUP BY is_fraud;"
++----------+----------+
+| is_fraud | COUNT(*) |
++----------+----------+
+| False    |    98167 |
+| True     |     1833 |
++----------+----------+
+claudlx@CLAUDENILSON:~$ sudo mysql -u root -e "SELECT user, host, plugin FROM mysql.user WHERE user='root';"
++------+-----------+-------------+
+| user | host      | plugin      |
++------+-----------+-------------+
+| root | localhost | auth_socket |
++------+-----------+-------------+
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 18
+Server version: 8.0.46-0ubuntu0.22.04.3 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'SUASENHA';
+GES;ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> exit
+Bye
+claudlx@CLAUDENILSON:~$ mysql -h 127.0.0.1 -u root -pSUASENHA bigdata_course -e "SELECT 1;"
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+claudlx@CLAUDENILSON:~$ sudo mysql -u root -e "SELECT VERSION();"
++-------------------------+
+| VERSION()               |
++-------------------------+
+| 8.0.46-0ubuntu0.22.04.3 |
++-------------------------+
+claudlx@CLAUDENILSON:~$ ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'SUASENHA';
+FLUSH PRIVILEGES
+ALTER: command not found
+FLUSH: command not found
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 21
+Server version: 8.0.46-0ubuntu0.22.04.3 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'SUASENHA';
+ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES
+    -> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'SUASENHA';
+GESERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'SUASENHA' at line 2
+mysql> FLUSH PRIVILEGES
+    -> exit
+    ->
+    ->
+    -> exit
+    -> exit
+    -> exit
+    ->
+    ->
+    -> \c
+mysql> exit
+Bye

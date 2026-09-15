@@ -1,0 +1,49 @@
+Microsoft Windows [versão 10.0.26200.9445]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home/claudlx
+claudlx@CLAUDENILSON:~$ python3 -c "
+import sqlite3, pandas as pd
+conn = sqlite3.connect('bigdata_course.db')
+pd.read_csv('customers_synthetic.csv').to_sql('customers', conn, if_exists='replace', index=False)
+pd.read_csv('transactions_synthetic.csv').to_sql('transactions', conn, if_exists='replace', index=False)
+print('OK — banco criado')
+"
+OK — banco criado
+claudlx@CLAUDENILSON:~$ python3 -c "
+import sqlite3
+conn = sqlite3.connect('bigdata_course.db')
+print('clientes:', conn.execute('SELECT COUNT(*) FROM customers').fetchone()[0])
+print('transações:', conn.execute('SELECT COUNT(*) FROM transactions').fetchone()[0])
+"
+clientes: 9993
+transações: 100000
+claudlx@CLAUDENILSON:~$ python3 -c "
+import sqlite3, pandas as pd
+conn = sqlite3.connect('bigdata_course.db')
+df = pd.read_sql('SELECT * FROM customers', conn)
+df.to_csv('bigdata/raw/customers/customers_from_db.csv', index=False)
+df2 = pd.read_sql('SELECT * FROM transactions', conn)
+df2.to_csv('bigdata/raw/transactions/transactions_from_db.csv', index=False)
+print('Exportado para bigdata/raw/')
+"
+Exportado para bigdata/raw/
+claudlx@CLAUDENILSON:~$ python3 -c "
+import sqlite3, pandas as pd
+conn = sqlite3.connect('bigdata_course.db')
+df = pd.read_sql('SELECT * FROM transactions', conn)
+# divide em 4 partes, como 4 mappers do Sqoop
+chunks = [df[i::4] for i in range(4)]
+for i, c in enumerate(chunks):
+    c.to_csv(f'bigdata/raw/transactions/part-{i}.csv', index=False)
+    print(f'part-{i}: {len(c)} linhas')
+"
+part-0: 25000 linhas
+part-1: 25000 linhas
+part-2: 25000 linhas
+part-3: 25000 linhas
+claudlx@CLAUDENILSON:~$ exit
+logout
+
+C:\Users\claud>

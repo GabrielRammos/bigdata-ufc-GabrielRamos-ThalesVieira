@@ -1,0 +1,272 @@
+Microsoft Windows [versão 10.0.26200.9278]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home
+claudlx@CLAUDENILSON:/home$ cd claudlx
+claudlx@CLAUDENILSON:~$ start-dfs.sh
+Starting namenodes on [localhost]
+Starting datanodes
+Starting secondary namenodes [CLAUDENILSON]
+claudlx@CLAUDENILSON:~$ jps
+1269 SecondaryNameNode
+903 NameNode
+1032 DataNode
+1402 Jps
+claudlx@CLAUDENILSON:~$ hadoop fs -mkdir -p /user/bigdata/raw/customers
+hadoop fs -mkdir -p /user/bigdata/raw/transactions
+hadoop fs -mkdir -p /user/bigdata/raw/fraud_labels
+hadoop fs -mkdir -p /user/bigdata/bronze
+hadoop fs -mkdir -p /user/bigdata/silver
+hadoop fs -mkdir -p /user/bigdata/gold
+claudlx@CLAUDENILSON:~$ hadoop fs -ls -R /user/bigdata
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/bronze
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/gold
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/raw
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:48 /user/bigdata/raw/customers
+-rw-r--r--   1 claudlx supergroup     842451 2026-08-22 11:48 /user/bigdata/raw/customers/customers_synthetic.csv
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:48 /user/bigdata/raw/fraud_labels
+-rw-r--r--   1 claudlx supergroup     218900 2026-08-22 11:48 /user/bigdata/raw/fraud_labels/fraud_labels.csv
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:48 /user/bigdata/raw/transactions
+-rw-r--r--   1 claudlx supergroup    8139648 2026-08-22 11:48 /user/bigdata/raw/transactions/transactions_synthetic.csv
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/silver
+claudlx@CLAUDENILSON:~$ hadoop fs -put customers_synthetic.csv /user/bigdata/raw/customers/
+hadoop fs -put transactions_synthetic.csv /user/bigdata/raw/transactions/
+hadoop fs -put fraud_labels.csv /user/bigdata/raw/fraud_labels/
+put: `/user/bigdata/raw/customers/customers_synthetic.csv': File exists
+put: `/user/bigdata/raw/transactions/transactions_synthetic.csv': File exists
+put: `/user/bigdata/raw/fraud_labels/fraud_labels.csv': File exists
+claudlx@CLAUDENILSON:~$ hadoop fs -ls -R /user/bigdata
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/bronze
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/gold
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/raw
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:48 /user/bigdata/raw/customers
+-rw-r--r--   1 claudlx supergroup     842451 2026-08-22 11:48 /user/bigdata/raw/customers/customers_synthetic.csv
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:48 /user/bigdata/raw/fraud_labels
+-rw-r--r--   1 claudlx supergroup     218900 2026-08-22 11:48 /user/bigdata/raw/fraud_labels/fraud_labels.csv
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:48 /user/bigdata/raw/transactions
+-rw-r--r--   1 claudlx supergroup    8139648 2026-08-22 11:48 /user/bigdata/raw/transactions/transactions_synthetic.csv
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/silver
+claudlx@CLAUDENILSON:~$ hdfs fsck /user/bigdata/raw/transactions/transactions_synthetic.csv -files -blocks -locations
+Connecting to namenode via http://localhost:9870/fsck?ugi=claudlx&files=1&blocks=1&locations=1&path=%2Fuser%2Fbigdata%2Fraw%2Ftransactions%2Ftransactions_synthetic.csv
+FSCK started by claudlx (auth:SIMPLE) from /127.0.0.1 for path /user/bigdata/raw/transactions/transactions_synthetic.csv at Wed Sep 09 19:13:31 BRT 2026
+
+/user/bigdata/raw/transactions/transactions_synthetic.csv 8139648 bytes, replicated: replication=1, 1 block(s):  OK
+0. BP-858631229-127.0.1.1-1787407335032:blk_1073741826_1002 len=8139648 Live_repl=1  [DatanodeInfoWithStorage[127.0.0.1:9866,DS-4217726b-006d-4bf7-affe-04794b2a94c4,DISK]]
+
+
+Status: HEALTHY
+ Number of data-nodes:  1
+ Number of racks:               1
+ Total dirs:                    0
+ Total symlinks:                0
+
+Replicated Blocks:
+ Total size:    8139648 B
+ Total files:   1
+ Total blocks (validated):      1 (avg. block size 8139648 B)
+ Minimally replicated blocks:   1 (100.0 %)
+ Over-replicated blocks:        0 (0.0 %)
+ Under-replicated blocks:       0 (0.0 %)
+ Mis-replicated blocks:         0 (0.0 %)
+ Default replication factor:    1
+ Average block replication:     1.0
+ Missing blocks:                0
+ Corrupt blocks:                0
+ Missing replicas:              0 (0.0 %)
+ Blocks queued for replication: 0
+
+Erasure Coded Block Groups:
+ Total size:    0 B
+ Total files:   0
+ Total block groups (validated):        0
+ Minimally erasure-coded block groups:  0
+ Over-erasure-coded block groups:       0
+ Under-erasure-coded block groups:      0
+ Unsatisfactory placement block groups: 0
+ Average block group size:      0.0
+ Missing block groups:          0
+ Corrupt block groups:          0
+ Missing internal blocks:       0
+ Blocks queued for replication: 0
+FSCK ended at Wed Sep 09 19:13:31 BRT 2026 in 32 milliseconds
+
+
+The filesystem under path '/user/bigdata/raw/transactions/transactions_synthetic.csv' is HEALTHY
+claudlx@CLAUDENILSON:~$ hdfs dfs -setrep -R 3 /
+Replication 3 set: /user/bigdata/raw/customers/customers_synthetic.csv
+Replication 3 set: /user/bigdata/raw/fraud_labels/fraud_labels.csv
+Replication 3 set: /user/bigdata/raw/transactions/transactions_synthetic.csv
+claudlx@CLAUDENILSON:~$ hdfs fsck /user/bigdata/raw/transactions/transactions_synthetic.csv -files -blocks -locations
+Connecting to namenode via http://localhost:9870/fsck?ugi=claudlx&files=1&blocks=1&locations=1&path=%2Fuser%2Fbigdata%2Fraw%2Ftransactions%2Ftransactions_synthetic.csv
+FSCK started by claudlx (auth:SIMPLE) from /127.0.0.1 for path /user/bigdata/raw/transactions/transactions_synthetic.csv at Wed Sep 09 19:14:31 BRT 2026
+
+/user/bigdata/raw/transactions/transactions_synthetic.csv 8139648 bytes, replicated: replication=3, 1 block(s):  Under replicated BP-858631229-127.0.1.1-1787407335032:blk_1073741826_1002. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+0. BP-858631229-127.0.1.1-1787407335032:blk_1073741826_1002 len=8139648 Live_repl=1  [DatanodeInfoWithStorage[127.0.0.1:9866,DS-4217726b-006d-4bf7-affe-04794b2a94c4,DISK]]
+
+
+Status: HEALTHY
+ Number of data-nodes:  1
+ Number of racks:               1
+ Total dirs:                    0
+ Total symlinks:                0
+
+Replicated Blocks:
+ Total size:    8139648 B
+ Total files:   1
+ Total blocks (validated):      1 (avg. block size 8139648 B)
+ Minimally replicated blocks:   1 (100.0 %)
+ Over-replicated blocks:        0 (0.0 %)
+ Under-replicated blocks:       1 (100.0 %)
+ Mis-replicated blocks:         0 (0.0 %)
+ Default replication factor:    1
+ Average block replication:     1.0
+ Missing blocks:                0
+ Corrupt blocks:                0
+ Missing replicas:              2 (66.666664 %)
+ Blocks queued for replication: 0
+
+Erasure Coded Block Groups:
+ Total size:    0 B
+ Total files:   0
+ Total block groups (validated):        0
+ Minimally erasure-coded block groups:  0
+ Over-erasure-coded block groups:       0
+ Under-erasure-coded block groups:      0
+ Unsatisfactory placement block groups: 0
+ Average block group size:      0.0
+ Missing block groups:          0
+ Corrupt block groups:          0
+ Missing internal blocks:       0
+ Blocks queued for replication: 0
+FSCK ended at Wed Sep 09 19:14:31 BRT 2026 in 3 milliseconds
+
+
+The filesystem under path '/user/bigdata/raw/transactions/transactions_synthetic.csv' is HEALTHY
+claudlx@CLAUDENILSON:~$ hadoop fs -cat /user/bigdata/raw/customers/*.csv | wc -l
+hadoop fs -cat /user/bigdata/raw/transactions/*.csv | wc -l
+9994
+100001
+claudlx@CLAUDENILSON:~$ hdfs dfsadmin -report
+Configured Capacity: 1081101176832 (1006.85 GB)
+Present Capacity: 1016305184768 (946.51 GB)
+DFS Remaining: 1016295858176 (946.50 GB)
+DFS Used: 9326592 (8.89 MB)
+DFS Used%: 0.00%
+Replicated Blocks:
+        Under replicated blocks: 3
+        Blocks with corrupt replicas: 0
+        Missing blocks: 0
+        Missing blocks (with replication factor 1): 0
+        Low redundancy blocks with highest priority to recover: 3
+        Pending deletion blocks: 0
+Erasure Coded Block Groups:
+        Low redundancy block groups: 0
+        Block groups with corrupt internal blocks: 0
+        Missing block groups: 0
+        Low redundancy blocks with highest priority to recover: 0
+        Pending deletion blocks: 0
+
+-------------------------------------------------
+Live datanodes (1):
+
+Name: 127.0.0.1:9866 (localhost)
+Hostname: CLAUDENILSON.localdomain
+Decommission Status : Normal
+Configured Capacity: 1081101176832 (1006.85 GB)
+DFS Used: 9326592 (8.89 MB)
+Non DFS Used: 9803636736 (9.13 GB)
+DFS Remaining: 1016295858176 (946.50 GB)
+DFS Used%: 0.00%
+DFS Remaining%: 94.01%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Wed Sep 09 19:21:36 BRT 2026
+Last Block Report: Wed Sep 09 19:11:43 BRT 2026
+Num of Blocks: 3
+
+
+
+Microsoft Windows [versão 10.0.26200.9278]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home
+claudlx@CLAUDENILSON:/home$ cd claudlx
+claudlx@CLAUDENILSON:~$ start-dfs.sh
+Starting namenodes on [localhost]
+Starting datanodes
+Starting secondary namenodes [CLAUDENILSON]
+claudlx@CLAUDENILSON:~$ jps
+960 NameNode
+1458 Jps
+1084 DataNode
+1293 SecondaryNameNode
+claudlx@CLAUDENILSON:~$ hadoop fs -mkdir -p /user/bigdata/raw/customers
+hadoop fs -mkdir -p /user/bigdata/raw/transactions
+hadoop fs -mkdir -p /user/bigdata/raw/fraud_labels
+hadoop fs -mkdir -p /user/bigdata/bronze
+hadoop fs -mkdir -p /user/bigdata/silver
+hadoop fs -mkdir -p /user/bigdata/gold
+hadoop fs -ls -R /user/bigdataclaudlx@CLAUDENILSON:~$ hadoop fs -ls -R /user/bigdata
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/bronze
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/gold
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/raw
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:48 /user/bigdata/raw/customers
+-rw-r--r--   3 claudlx supergroup     842451 2026-08-22 11:48 /user/bigdata/raw/customers/customers_synthetic.csv
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:48 /user/bigdata/raw/fraud_labels
+-rw-r--r--   3 claudlx supergroup     218900 2026-08-22 11:48 /user/bigdata/raw/fraud_labels/fraud_labels.csv
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:48 /user/bigdata/raw/transactions
+-rw-r--r--   3 claudlx supergroup    8139648 2026-08-22 11:48 /user/bigdata/raw/transactions/transactions_synthetic.csv
+drwxr-xr-x   - claudlx supergroup          0 2026-08-22 11:40 /user/bigdata/silver
+claudlx@CLAUDENILSON:~$ hdfs fsck /user/bigdata/raw/transactions/transactions_synthetic.csv -files -blocks -locations
+Connecting to namenode via http://localhost:9870/fsck?ugi=claudlx&files=1&blocks=1&locations=1&path=%2Fuser%2Fbigdata%2Fraw%2Ftransactions%2Ftransactions_synthetic.csv
+FSCK started by claudlx (auth:SIMPLE) from /127.0.0.1 for path /user/bigdata/raw/transactions/transactions_synthetic.csv at Wed Sep 09 21:33:56 BRT 2026
+
+/user/bigdata/raw/transactions/transactions_synthetic.csv 8139648 bytes, replicated: replication=3, 1 block(s):  Under replicated BP-858631229-127.0.1.1-1787407335032:blk_1073741826_1002. Target Replicas is 3 but found 1 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).
+0. BP-858631229-127.0.1.1-1787407335032:blk_1073741826_1002 len=8139648 Live_repl=1  [DatanodeInfoWithStorage[127.0.0.1:9866,DS-4217726b-006d-4bf7-affe-04794b2a94c4,DISK]]
+
+
+Status: HEALTHY
+ Number of data-nodes:  1
+ Number of racks:               1
+ Total dirs:                    0
+ Total symlinks:                0
+
+Replicated Blocks:
+ Total size:    8139648 B
+ Total files:   1
+ Total blocks (validated):      1 (avg. block size 8139648 B)
+ Minimally replicated blocks:   1 (100.0 %)
+ Over-replicated blocks:        0 (0.0 %)
+ Under-replicated blocks:       1 (100.0 %)
+ Mis-replicated blocks:         0 (0.0 %)
+ Default replication factor:    1
+ Average block replication:     1.0
+ Missing blocks:                0
+ Corrupt blocks:                0
+ Missing replicas:              2 (66.666664 %)
+ Blocks queued for replication: 0
+
+Erasure Coded Block Groups:
+ Total size:    0 B
+ Total files:   0
+ Total block groups (validated):        0
+ Minimally erasure-coded block groups:  0
+ Over-erasure-coded block groups:       0
+ Under-erasure-coded block groups:      0
+ Unsatisfactory placement block groups: 0
+ Average block group size:      0.0
+ Missing block groups:          0
+ Corrupt block groups:          0
+ Missing internal blocks:       0
+ Blocks queued for replication: 0
+FSCK ended at Wed Sep 09 21:33:56 BRT 2026 in 34 milliseconds
+
+
+The filesystem under path '/user/bigdata/raw/transactions/transactions_synthetic.csv' is HEALTHY
+claudlx@CLAUDENILSON:~$

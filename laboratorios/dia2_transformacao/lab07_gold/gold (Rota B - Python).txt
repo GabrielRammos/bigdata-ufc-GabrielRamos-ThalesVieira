@@ -1,0 +1,64 @@
+>>>
+>>> import duckdb
+>>> con = duckdb.connect()
+>>> con.sql("CREATE TABLE silver_transactions AS SELECT * FROM read_parquet('bigdata/silver/transactions_enriched.parquet')")
+>>>
+>>> con.sql("""
+... CREATE TABLE gold_fraud_risk AS
+... SELECT
+...   segment,
+...   COUNT(*) AS total_transacoes,
+...   SUM(amount) AS valor_total,
+...   ROUND(AVG(amount), 2) AS ticket_medio,
+...   SUM(CASE WHEN is_fraud THEN 1 ELSE 0 END) AS qtd_fraudes,
+...   ROUND(100.0 * SUM(CASE WHEN is_fraud THEN 1 ELSE 0 END) / COUNT(*), 2) AS taxa_fraude_pct,
+SUM(CASE WHEN is...   SUM(CASE WHEN is_fraud THEN amount ELSE 0 END) AS valor_em_risco
+BY segment
+""")
+con.sql("SELECT * FROM gold_frau... FROM silver_transactions
+d_risk ORDER BY ... GROUP BY segment
+... """)
+taxa_fraude_pct DESC").show()>>> con.sql("SELECT * FROM gold_fraud_risk ORDER BY taxa_fraude_pct DESC").show()
+┌───────────┬──────────────────┬────────────────────┬───┬─────────────┬─────────────────┬────────────────────┐
+│  segment  │ total_transacoes │    valor_total     │ … │ qtd_fraudes │ taxa_fraude_pct │   valor_em_risco   │
+│  varchar  │      int64       │       double       │ … │   int128    │     double      │       double       │
+├───────────┼──────────────────┼────────────────────┼───┼─────────────┼─────────────────┼────────────────────┤
+│ High-Risk │             9155 │ 1664640.2447309494 │ … │         705 │             7.7 │ 126451.06910800934 │
+│ Standard  │            29689 │  5479399.846734047 │ … │         655 │            2.21 │ 106828.41910934448 │
+│ Premium   │            61156 │ 11235041.576210976 │ … │         473 │            0.77 │  81308.43799591064 │
+└───────────┴──────────────────┴────────────────────┴───┴─────────────┴─────────────────┴────────────────────┘
+  3 rows                                                                                 7 columns (6 shown)
+
+>>> con.sql("""
+ily_metrics AS
+S... CREATE TABLE gold_daily_metrics AS
+ELECT year, month, day,
+  COUNT(... SELECT year, month, day,
+...   COUNT(*) AS transacoes,
+...   SUM(CASE WHEN is_fraud THEN 1 ELSE 0 END) AS fraudes
+... FROM silver_transactions
+... GROUP BY year, month, day
+... """)
+ECT year, month, day, fraudes
+FROM gold_daily_metrics ORDER BY fraudes DESC LIMIT 5
+""").show()>>> con.sql("""
+... SELECT year, month, day, fraudes
+... FROM gold_daily_metrics ORDER BY fraudes DESC LIMIT 5
+... """).show()
+┌───────┬───────┬───────┬─────────┐
+│ year  │ month │  day  │ fraudes │
+│ int64 │ int64 │ int64 │ int128  │
+├───────┼───────┼───────┼─────────┤
+│  2023 │     4 │    27 │      16 │
+│  2023 │     5 │    21 │      13 │
+│  2023 │    12 │    22 │      13 │
+│  2024 │     5 │    23 │      13 │
+│  2024 │     5 │    25 │      12 │
+└───────┴───────┴───────┴─────────┘
+
+>>> con.sql("COPY gold_fraud_risk TO 'bigdata/gold/fraud_risk.parquet' (FORMAT PARQUET)")
+>>> con.sql("COPY gold_daily_metrics TO 'bigdata/gold/daily_metrics.parquet' (FORMAT PARQUET)")
+>>> con.sql("COPY gold_fraud_risk TO 'bigdata/gold/fraud_risk.csv' (HEADER, DELIMITER ',')")
+>>> print("Gold layer salva em bigdata/gold/")
+Gold layer salva em bigdata/gold/
+>>> exit()

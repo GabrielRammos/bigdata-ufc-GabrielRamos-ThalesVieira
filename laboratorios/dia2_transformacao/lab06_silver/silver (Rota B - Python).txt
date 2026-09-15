@@ -1,0 +1,89 @@
+ import duckdb
+>>> con = duckdb.connect()
+>>> con.sql("CREATE TABLE bronze_customers    AS SELECT * FROM read_parquet('bigdata/bronze/customers.parquet')")
+n.sql("CREATE TABLE bronze_transactions AS SELECT * FROM read_parquet('bigdata/bronze/transactions.parquet')")>>> con.sql("CREATE TABLE bronze_transactions AS SELECT * FROM read_parquet('bigdata/bronze/transactions.parquet')")
+>>>
+>>> con.sql("""
+... CREATE TABLE silver_transactions AS
+... SELECT
+...   t.transaction_id, t.customer_id, t.amount, t.transaction_type,
+...   t.status, t.risk_score, t.is_fraud, t.ts,
+...   c.segment, c.credit_score,
+...   year(t.ts)  AS year,
+...   month(t.ts) AS month,
+...   day(t.ts)   AS day,
+...   dayofweek(t.ts) AS day_of_week,
+...   CASE
+...     WHEN t.amount < 100  THEN 'baixo'
+amount < 1000 TH...     WHEN t.amount < 1000 THEN 'medio'
+...     ELSE 'alto'
+...   END AS amount_band
+FROM bronze_transactions t
+JOIN bronze_customers c ON t.customer... FROM bronze_transactions t
+... JOIN bronze_customers c ON t.customer_id = c.customer_id
+... """)
+w()>>> con.sql("SELECT COUNT(*) FROM silver_transactions").show()
+┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│       100000 │
+└──────────────┘
+
+>>>
+>>> con.sql("SELECT COUNT(*) AS silver, (SELECT COUNT(*) FROM bronze_transactions) AS bronze FROM silver_transactions").show()
+RE segment IS NULL").show()┌────────┬────────┐
+│ silver │ bronze │
+│ int64  │ int64  │
+├────────┼────────┤
+│ 100000 │ 100000 │
+└────────┴────────┘
+
+>>> con.sql("SELECT COUNT(*) AS sem_segmento FROM silver_transactions WHERE segment IS NULL").show()
+┌──────────────┐
+│ sem_segmento │
+│    int64     │
+├──────────────┤
+│            0 │
+└──────────────┘
+
+>>> con.sql("SELECT COUNT(*) AS silver, (SELECT COUNT(*) FROM bronze_transactions) AS bronze FROM silver_transactions").show()
+┌────────┬────────┐
+│ silver │ bronze │
+│ int64  │ int64  │
+├────────┼────────┤
+│ 100000 │ 100000 │
+└────────┴────────┘
+
+>>> con.sql("SELECT COUNT(*) AS sem_segmento FROM silver_transactions WHERE segment IS NULL").show()
+┌──────────────┐
+│ sem_segmento │
+│    int64     │
+├──────────────┤
+│            0 │
+└──────────────┘
+
+>>>
+>>> con.sql("""
+ransacoes,
+     ... SELECT segment,
+  ROUND(100.0 * ...        COUNT(*) AS transacoes,
+...        ROUND(100.0 * SUM(CASE WHEN is_fraud THEN 1 ELSE 0 END) / COUNT(*), 2) AS taxa_fraude_pct
+ silver_transact... FROM silver_transactions
+axa_fraude_pct DESC
+""").show()... GROUP BY segment
+... ORDER BY taxa_fraude_pct DESC
+... """).show()
+┌───────────┬────────────┬─────────────────┐
+│  segment  │ transacoes │ taxa_fraude_pct │
+│  varchar  │   int64    │     double      │
+├───────────┼────────────┼─────────────────┤
+│ High-Risk │       9155 │             7.7 │
+│ Standard  │      29689 │            2.21 │
+│ Premium   │      61156 │            0.77 │
+└───────────┴────────────┴─────────────────┘
+
+>>> con.sql("COPY silver_transactions TO 'bigdata/silver/transactions_enriched.parquet' (FORMAT PARQUET)")
+>>> print("Silver layer salva em bigdata/silver/transactions_enriched.parquet")
+Silver layer salva em bigdata/silver/transactions_enriched.parquet
+

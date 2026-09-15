@@ -1,0 +1,352 @@
+Microsoft Windows [versão 10.0.26200.9445]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home/claudlx
+claudlx@CLAUDENILSON:~$ pip install plotly
+Defaulting to user installation because normal site-packages is not writeable
+Requirement already satisfied: plotly in ./.local/lib/python3.10/site-packages (7.0.0)
+Requirement already satisfied: packaging in ./.local/lib/python3.10/site-packages (from plotly) (26.3)
+Requirement already satisfied: narwhals>=1.15.1 in ./.local/lib/python3.10/site-packages (from plotly) (2.26.0)
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import pandas as pd
+>>> import plotly.graph_objects as go
+>>> from plotly.subplots import make_subplots
+>>> fraud_risk = pd.read_csv('fraud_risk_export.csv')
+>>> print(fraud_risk)
+     segment  total_transacoes   valor_total  ticket_medio  qtd_fraudes  taxa_fraude_pct  valor_em_risco
+0   Standard             29689  5.479400e+06        184.56        655.0             2.21   106828.419109
+1    Premium             61156  1.123504e+07        183.71        473.0             0.77    81308.437996
+2  High-Risk              9155  1.664640e+06        181.83        705.0             7.70   126451.069108
+>>>
+>>> fig = make_subplots(
+ cols=2,
+    specs=[[{"type":"in...     rows=2, cols=2,
+dicator"}, {"type":"indicator"}]...     specs=[[{"type":"indicator"}, {"type":"indicator"}],
+...            [{"type":"bar"}, {"type":"table"}]],
+...     subplot_titles=("", "", "Taxa de fraude por segmento", "Detalhe por segmento")
+ — total de tran... )
+sações
+fig.add_trace(go.Indicator(
+    mode="number", value=fraud_risk['total_transacoes'].sum(),
+    title={"text": "Total de Transações"}
+), row=1, col=1)
+
+# 2) KPI — taxa de fraude geral
+taxa_geral = 100 * fraud_risk['qtd_fraudes'].sum() / fraud_risk['total_transacoes'].sum()
+fig.add_trace(go.Indicator(
+    mode="number", value=round(taxa_geral, 2),
+    number={"suffix": "%"},
+    title={"text": "Taxa de Fraude Geral"}
+), row=1, col=2)
+
+# 3) Composição — barras por segmento
+fig.add_trace(go.Bar(
+    x=fraud_risk['segment'], y=fraud_risk['taxa_fraude_pct'],
+    marker_color=['#2ecc71','#f5a623','#e5484d']
+), row=2, col=1)
+
+# 4) Detalhe — tabela navegável
+fig.add_trace(go.Table(
+    header=dict(values=list(fraud_risk.columns)),
+    cells=dict(values=[fraud_risk[c] for c in fraud_risk.columns])
+), row=2, col=2)
+
+fig.update_layout(height=650, title_text="Dashboard — Risco de Fraude", showlegend=False)>>>
+>>> # 1) KPI — total de transações
+>>> fig.add_trace(go.Indicator(
+...     mode="number", value=fraud_risk['total_transacoes'].sum(),
+...     title={"text": "Total de Transações"}
+... ), row=1, col=1)
+Figure({
+    'data': [{'domain': {'x': [0.0, 0.45], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'title': {'text': 'Total de Transações'},
+              'type': 'indicator',
+              'value': np.int64(100000)}],
+    'layout': {'annotations': [{'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Taxa de fraude por segmento',
+                                'x': 0.225,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'},
+                               {'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Detalhe por segmento',
+                                'x': 0.775,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'}],
+               'template': '...',
+               'xaxis': {'anchor': 'y', 'domain': [0.0, 0.45]},
+               'yaxis': {'anchor': 'x', 'domain': [0.0, 0.375]}}
+})
+>>>
+>>> # 2) KPI — taxa de fraude geral
+>>> taxa_geral = 100 * fraud_risk['qtd_fraudes'].sum() / fraud_risk['total_transacoes'].sum()
+>>> fig.add_trace(go.Indicator(
+...     mode="number", value=round(taxa_geral, 2),
+...     number={"suffix": "%"},
+...     title={"text": "Taxa de Fraude Geral"}
+... ), row=1, col=2)
+Figure({
+    'data': [{'domain': {'x': [0.0, 0.45], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'title': {'text': 'Total de Transações'},
+              'type': 'indicator',
+              'value': np.int64(100000)},
+             {'domain': {'x': [0.55, 1.0], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'number': {'suffix': '%'},
+              'title': {'text': 'Taxa de Fraude Geral'},
+              'type': 'indicator',
+              'value': np.float64(1.83)}],
+    'layout': {'annotations': [{'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Taxa de fraude por segmento',
+                                'x': 0.225,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'},
+                               {'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Detalhe por segmento',
+                                'x': 0.775,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'}],
+               'template': '...',
+               'xaxis': {'anchor': 'y', 'domain': [0.0, 0.45]},
+               'yaxis': {'anchor': 'x', 'domain': [0.0, 0.375]}}
+})
+>>>
+>>> # 3) Composição — barras por segmento
+>>> fig.add_trace(go.Bar(
+...     x=fraud_risk['segment'], y=fraud_risk['taxa_fraude_pct'],
+...     marker_color=['#2ecc71','#f5a623','#e5484d']
+... ), row=2, col=1)
+Figure({
+    'data': [{'domain': {'x': [0.0, 0.45], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'title': {'text': 'Total de Transações'},
+              'type': 'indicator',
+              'value': np.int64(100000)},
+             {'domain': {'x': [0.55, 1.0], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'number': {'suffix': '%'},
+              'title': {'text': 'Taxa de Fraude Geral'},
+              'type': 'indicator',
+              'value': np.float64(1.83)},
+             {'marker': {'color': ['#2ecc71', '#f5a623', '#e5484d']},
+              'type': 'bar',
+              'x': array(['Standard', 'Premium', 'High-Risk'], dtype=object),
+              'xaxis': 'x',
+              'y': {'bdata': 'rkfhehSuAUCkcD0K16PoP83MzMzMzB5A', 'dtype': 'f8'},
+              'yaxis': 'y'}],
+    'layout': {'annotations': [{'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Taxa de fraude por segmento',
+                                'x': 0.225,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'},
+                               {'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Detalhe por segmento',
+                                'x': 0.775,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'}],
+               'template': '...',
+               'xaxis': {'anchor': 'y', 'domain': [0.0, 0.45]},
+               'yaxis': {'anchor': 'x', 'domain': [0.0, 0.375]}}
+})
+>>>
+>>> # 4) Detalhe — tabela navegável
+>>> fig.add_trace(go.Table(
+...     header=dict(values=list(fraud_risk.columns)),
+...     cells=dict(values=[fraud_risk[c] for c in fraud_risk.columns])
+... ), row=2, col=2)
+Figure({
+    'data': [{'domain': {'x': [0.0, 0.45], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'title': {'text': 'Total de Transações'},
+              'type': 'indicator',
+              'value': np.int64(100000)},
+             {'domain': {'x': [0.55, 1.0], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'number': {'suffix': '%'},
+              'title': {'text': 'Taxa de Fraude Geral'},
+              'type': 'indicator',
+              'value': np.float64(1.83)},
+             {'marker': {'color': ['#2ecc71', '#f5a623', '#e5484d']},
+              'type': 'bar',
+              'x': array(['Standard', 'Premium', 'High-Risk'], dtype=object),
+              'xaxis': 'x',
+              'y': {'bdata': 'rkfhehSuAUCkcD0K16PoP83MzMzMzB5A', 'dtype': 'f8'},
+              'yaxis': 'y'},
+             {'cells': {'values': [['Standard', 'Premium', 'High-Risk'], [29689,
+                                   61156, 9155], [5479399.846734047,
+                                   11235041.576210976, 1664640.2447309494],
+                                   [184.56, 183.71, 181.83], [655.0, 473.0, 705.0],
+                                   [2.21, 0.77, 7.7], [106828.41910934448,
+                                   81308.43799591064, 126451.06910800934]]},
+              'domain': {'x': [0.55, 1.0], 'y': [0.0, 0.375]},
+              'header': {'values': [segment, total_transacoes, valor_total,
+                                    ticket_medio, qtd_fraudes, taxa_fraude_pct,
+                                    valor_em_risco]},
+              'type': 'table'}],
+    'layout': {'annotations': [{'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Taxa de fraude por segmento',
+                                'x': 0.225,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'},
+                               {'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Detalhe por segmento',
+                                'x': 0.775,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'}],
+               'template': '...',
+               'xaxis': {'anchor': 'y', 'domain': [0.0, 0.45]},
+               'yaxis': {'anchor': 'x', 'domain': [0.0, 0.375]}}
+})
+>>>
+>>> fig.update_layout(height=650, title_text="Dashboard — Risco de Fraude", showlegend=False)
+Figure({
+    'data': [{'domain': {'x': [0.0, 0.45], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'title': {'text': 'Total de Transações'},
+              'type': 'indicator',
+              'value': np.int64(100000)},
+             {'domain': {'x': [0.55, 1.0], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'number': {'suffix': '%'},
+              'title': {'text': 'Taxa de Fraude Geral'},
+              'type': 'indicator',
+              'value': np.float64(1.83)},
+             {'marker': {'color': ['#2ecc71', '#f5a623', '#e5484d']},
+              'type': 'bar',
+              'x': array(['Standard', 'Premium', 'High-Risk'], dtype=object),
+              'xaxis': 'x',
+              'y': {'bdata': 'rkfhehSuAUCkcD0K16PoP83MzMzMzB5A', 'dtype': 'f8'},
+              'yaxis': 'y'},
+             {'cells': {'values': [['Standard', 'Premium', 'High-Risk'], [29689,
+                                   61156, 9155], [5479399.846734047,
+                                   11235041.576210976, 1664640.2447309494],
+                                   [184.56, 183.71, 181.83], [655.0, 473.0, 705.0],
+                                   [2.21, 0.77, 7.7], [106828.41910934448,
+                                   81308.43799591064, 126451.06910800934]]},
+              'domain': {'x': [0.55, 1.0], 'y': [0.0, 0.375]},
+              'header': {'values': [segment, total_transacoes, valor_total,
+                                    ticket_medio, qtd_fraudes, taxa_fraude_pct,
+                                    valor_em_risco]},
+              'type': 'table'}],
+    'layout': {'annotations': [{'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Taxa de fraude por segmento',
+                                'x': 0.225,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'},
+                               {'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Detalhe por segmento',
+                                'x': 0.775,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'}],
+               'height': 650,
+               'showlegend': False,
+               'template': '...',
+               'title': {'text': 'Dashboard — Risco de Fraude'},
+               'xaxis': {'anchor': 'y', 'domain': [0.0, 0.45]},
+               'yaxis': {'anchor': 'x', 'domain': [0.0, 0.375]}}
+})
+>>> fig.write_html("dashboard_fraude.html")
+>>> print("Salvo em dashboard_fraude.html — abra no navegador")
+Salvo em dashboard_fraude.html — abra no navegador
+>>> fig.update_traces(hovertemplate="%{x}: %{y:.2f}%", row=2, col=1)
+Figure({
+    'data': [{'domain': {'x': [0.0, 0.45], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'title': {'text': 'Total de Transações'},
+              'type': 'indicator',
+              'value': np.int64(100000)},
+             {'domain': {'x': [0.55, 1.0], 'y': [0.625, 1.0]},
+              'mode': 'number',
+              'number': {'suffix': '%'},
+              'title': {'text': 'Taxa de Fraude Geral'},
+              'type': 'indicator',
+              'value': np.float64(1.83)},
+             {'hovertemplate': '%{x}: %{y:.2f}%',
+              'marker': {'color': ['#2ecc71', '#f5a623', '#e5484d']},
+              'type': 'bar',
+              'x': array(['Standard', 'Premium', 'High-Risk'], dtype=object),
+              'xaxis': 'x',
+              'y': {'bdata': 'rkfhehSuAUCkcD0K16PoP83MzMzMzB5A', 'dtype': 'f8'},
+              'yaxis': 'y'},
+             {'cells': {'values': [['Standard', 'Premium', 'High-Risk'], [29689,
+                                   61156, 9155], [5479399.846734047,
+                                   11235041.576210976, 1664640.2447309494],
+                                   [184.56, 183.71, 181.83], [655.0, 473.0, 705.0],
+                                   [2.21, 0.77, 7.7], [106828.41910934448,
+                                   81308.43799591064, 126451.06910800934]]},
+              'domain': {'x': [0.55, 1.0], 'y': [0.0, 0.375]},
+              'header': {'values': [segment, total_transacoes, valor_total,
+                                    ticket_medio, qtd_fraudes, taxa_fraude_pct,
+                                    valor_em_risco]},
+              'type': 'table'}],
+    'layout': {'annotations': [{'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Taxa de fraude por segmento',
+                                'x': 0.225,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'},
+                               {'font': {'size': 16},
+                                'showarrow': False,
+                                'text': 'Detalhe por segmento',
+                                'x': 0.775,
+                                'xanchor': 'center',
+                                'xref': 'paper',
+                                'y': 0.375,
+                                'yanchor': 'bottom',
+                                'yref': 'paper'}],
+               'height': 650,
+               'showlegend': False,
+               'template': '...',
+               'title': {'text': 'Dashboard — Risco de Fraude'},
+               'xaxis': {'anchor': 'y', 'domain': [0.0, 0.45]},
+               'yaxis': {'anchor': 'x', 'domain': [0.0, 0.375]}}
+})
+>>> fig.write_html("dashboard_fraude.html")
+

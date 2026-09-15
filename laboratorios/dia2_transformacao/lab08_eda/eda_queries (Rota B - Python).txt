@@ -1,0 +1,120 @@
+Microsoft Windows [versão 10.0.26200.9445]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home/claudlx
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import duckdb
+>>> con = duckdb.connect()
+>>> con.sql("CREATE TABLE silver_transactions AS SELECT * FROM read_parquet('bigdata/silver/transactions_enriched.parquet')")
+>>> con.sql("""
+... SELECT segment,
+...        ROUND(AVG(credit_score), 1) AS score_medio,
+...        COUNT(DISTINCT customer_id) AS clientes
+... FROM silver_transactions
+... GROUP BY segment
+... ORDER BY score_medio;
+").show()
+... """).show()
+┌───────────┬─────────────┬──────────┐
+│  segment  │ score_medio │ clientes │
+│  varchar  │   double    │  int64   │
+├───────────┼─────────────┼──────────┤
+│ Standard  │       643.9 │     2665 │
+│ Premium   │       652.7 │     5563 │
+│ High-Risk │       659.8 │      876 │
+└───────────┴─────────────┴──────────┘
+
+>>> con.sql("""
+... SELECT transaction_type,
+...        SUM(CASE WHEN is_fraud THEN 1 ELSE 0 END) AS fraudes,
+...        COUNT(*) AS total,
+...        ROUND(100.0*SUM(CASE WHEN is_fraud THEN 1 ELSE 0 END)/COUNT(*), 2) AS taxa_pct
+... FROM silver_transactions
+... GROUP BY transaction_type
+... ORDER BY taxa_pct DESC;
+... """).show()
+┌──────────────────┬─────────┬───────┬──────────┐
+│ transaction_type │ fraudes │ total │ taxa_pct │
+│     varchar      │ int128  │ int64 │  double  │
+├──────────────────┼─────────┼───────┼──────────┤
+│ transferencia    │     390 │ 20102 │     1.94 │
+│ pagamento        │     196 │ 10180 │     1.93 │
+│ compra           │     929 │ 49782 │     1.87 │
+│ saque            │     318 │ 19936 │      1.6 │
+└──────────────────┴─────────┴───────┴──────────┘
+
+>>> con.sql("""
+... SELECT day,
+...        COUNT(*) AS total_transacoes,
+...        SUM(CASE WHEN is_fraud THEN 1 ELSE 0 END) AS fraudes
+... FROM silver_transactions
+... GROUP BY day
+... ORDER BY fraudes DESC
+... LIMIT 10;
+... """).show()
+┌───────┬──────────────────┬─────────┐
+│  day  │ total_transacoes │ fraudes │
+│ int64 │      int64       │ int128  │
+├───────┼──────────────────┼─────────┤
+│    21 │             7777 │     161 │
+│    26 │             7913 │     157 │
+│    24 │             7792 │     148 │
+│    27 │             7801 │     144 │
+│    20 │             7850 │     140 │
+│    25 │             7689 │     140 │
+│    23 │             7696 │     133 │
+│    22 │             7838 │     132 │
+│    28 │             7914 │     131 │
+│    11 │             1505 │      41 │
+└───────┴──────────────────┴─────────┘
+  10 rows                  3 columns
+
+>>> con.sql("CREATE TABLE bronze_customers AS SELECT * FROM read_parquet('bigdata/bronze/customers.parquet')")
+>>> con.sql("""
+... SELECT
+...   CASE WHEN DATEDIFF('day', c.created_at, CURRENT_DATE) > 365 THEN 'cliente antigo'
+...        ELSE 'cliente novo' END AS cohort,
+...   ROUND(AVG(t.amount), 2) AS ticket_medio,
+...   COUNT(*) AS transacoes
+... FROM silver_transactions t
+... JOIN bronze_customers c ON t.customer_id = c.customer_id
+... GROUP BY 1
+... """).show()
+┌────────────────┬──────────────┬────────────┐
+│     cohort     │ ticket_medio │ transacoes │
+│    varchar     │    double    │   int64    │
+├────────────────┼──────────────┼────────────┤
+│ cliente novo   │       184.99 │      44171 │
+│ cliente antigo │       182.84 │      55829 │
+└────────────────┴──────────────┴────────────┘
+
+>>> con.sql("""
+... SELECT customer_id, COUNT(*) AS compras
+... FROM silver_transactions
+RE segment = 'Pr... WHERE segment = 'Premium' AND transaction_type = 'compra'
+... GROUP BY customer_id
+... HAVING COUNT(*) > 10
+... ORDER BY compras DESC
+... LIMIT 10;
+... """).show()
+┌─────────────┬─────────┐
+│ customer_id │ compras │
+│    int64    │  int64  │
+├─────────────┼─────────┤
+│        1920 │      49 │
+│        8500 │      44 │
+│        7531 │      41 │
+│        9306 │      40 │
+│        5251 │      40 │
+│        7105 │      39 │
+│        5354 │      39 │
+│        1072 │      39 │
+│        3686 │      38 │
+│        4400 │      37 │
+└─────────────┴─────────┘
+  10 rows     2 columns
+
+>>> exit()

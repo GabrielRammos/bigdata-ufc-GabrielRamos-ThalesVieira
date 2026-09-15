@@ -1,0 +1,101 @@
+Microsoft Windows [versão 10.0.26200.9445]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home/claudlx
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import duckdb
+>>> con = duckdb.connect()
+>>> con.sql("CREATE TABLE gold_fraud_risk AS SELECT * FROM read_parquet('bigdata/gold/fraud_risk.parquet')")
+>>> con.sql("COPY gold_fraud_risk TO 'fraud_risk_export.csv' (HEADER, DELIMITER ',')")
+>>> cat fraud_risk_export.csv
+  File "<stdin>", line 1
+    cat fraud_risk_export.csv
+        ^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+>>> with open("fraud_risk_export.csv", "r", encoding="utf-8") as file:
+...     for line in file:
+...         print(line, end="")
+...
+segment,total_transacoes,valor_total,ticket_medio,qtd_fraudes,taxa_fraude_pct,valor_em_risco
+Standard,29689,5479399.846734047,184.56,655.0,2.21,106828.41910934448
+Premium,61156,11235041.576210976,183.71,473.0,0.77,81308.43799591064
+High-Risk,9155,1664640.2447309494,181.83,705.0,7.7,126451.06910800934
+>>>
+>>>
+>>> import sqlite3, pandas as pd
+>>> df = con.sql("SELECT * FROM gold_fraud_risk").df()
+>>> conn = sqlite3.connect('bi_db.sqlite')
+s='replace', index=False)
+print(>>> df.to_sql('fraud_risk_bi', conn, if_exists='replace', index=False)
+"Exportado para bi_db.sqlite — tabela fraud_risk_bi")3
+>>> print("Exportado para bi_db.sqlite — tabela fraud_risk_bi")
+Exportado para bi_db.sqlite — tabela fraud_risk_bi
+>>>
+>>>
+>>>
+>>> from pyspark.sql import SparkSession
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'pyspark'
+>>> exit()
+claudlx@CLAUDENILSON:~$ sudo pip install SparkSession
+[sudo] password for claudlx:
+ERROR: Could not find a version that satisfies the requirement SparkSession (from versions: none)
+ERROR: No matching distribution found for SparkSession
+claudlx@CLAUDENILSON:~$ sudo pip install pyspark
+Collecting pyspark
+  Downloading pyspark-4.2.0.tar.gz (450.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 450.1/450.1 MB ? eta 0:00:00
+  Preparing metadata (setup.py) ... done
+Collecting py4j<0.10.9.10,>=0.10.9.7
+  Downloading py4j-0.10.9.9-py2.py3-none-any.whl (203 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 203.0/203.0 KB 9.1 MB/s eta 0:00:00
+Building wheels for collected packages: pyspark
+  Building wheel for pyspark (setup.py) ... done
+  Created wheel for pyspark: filename=pyspark-4.2.0-py2.py3-none-any.whl size=450798585 sha256=b99d41738c7d36ffe3dd8d665766904832cfcbe0e3564c7787f2df232d4d6058
+  Stored in directory: /root/.cache/pip/wheels/a1/b8/2f/d68dfc2b0937579aca242a796b173ced82a3100451811219ab
+Successfully built pyspark
+Installing collected packages: py4j, pyspark
+Successfully installed py4j-0.10.9.9 pyspark-4.2.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from pyspark.sql import SparkSession
+>>> import pandas as pd
+>>> spark = SparkSession.builder.appName("export").master("local[*]").getOrCreate()
+
+df = spark.read.parquet("bigdata/gold/fraud_risk.parquet")
+df.show()
+
+df.toPandas().to_sql('fraud_risk_bi_spark', conn, if_exists='replace', index=False)
+26/09/14 10:14:05 WARN Utils: Your hostname, CLAUDENILSON resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instead (on interface lo)
+26/09/14 10:14:05 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/09/14 10:14:05 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.10/dist-packages/pyspark/sql/session.py", line 562, in getOrCreate
+    session = SparkSession(sc, options=self._options)
+  File "/usr/local/lib/python3.10/dist-packages/pyspark/sql/session.py", line 660, in __init__
+    jSparkSessionClass.getDefaultSession().isDefined()
+TypeError: 'JavaPackage' object is not callable
+>>>
+>>> df = spark.read.parquet("bigdata/gold/fraud_risk.parquet")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'spark' is not defined
+>>> df.show()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'df' is not defined
+>>>
+>>> df.toPandas().to_sql('fraud_risk_bi_spark', conn, if_exists='replace', index=False)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'df' is not defined
+>>> exit()

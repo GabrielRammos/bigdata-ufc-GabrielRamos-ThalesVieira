@@ -1,0 +1,83 @@
+>>> from pyspark.sql import SparkSession
+>>> spark = SparkSession.builder.appName("lab12").master("local[*]").getOrCreate()
+26/09/14 11:22:02 WARN Utils: Your hostname, CLAUDENILSON resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instead (on interface lo)
+26/09/14 11:22:02 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/09/14 11:22:09 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+>>> df = spark.read.parquet("bigdata/silver/transactions_enriched.parquet")
+>>> from pyspark.ml.feature import StringIndexer, VectorAssembler
+>>> from pyspark.ml.classification import LogisticRegression
+>>> from pyspark.ml import Pipeline
+>>> indexer = StringIndexer(inputCol="segment", outputCol="segment_idx")
+>>> assembler = VectorAssembler(
+...     inputCols=["amount", "risk_score", "credit_score", "segment_idx"],
+...     outputCol="features"
+... )
+>>> df_ml = df.withColumn("label", df.is_fraud.cast("integer"))
+>>> train, test = df_ml.randomSplit([0.8, 0.2], seed=42)
+>>> print("treino:", train.count(), "· teste:", test.count())
+treino: 79901 · teste: 20099
+>>> lr = LogisticRegression(featuresCol="features", labelCol="label")
+>>> pipeline = Pipeline(stages=[indexer, assembler, lr])
+>>> modelo = pipeline.fit(train)
+print("Modelo treinado.")26/09/14 11:27:35 WARN InstanceBuilder: Failed to load implementation from:dev.ludovic.netlib.blas.JNIBLAS
+>>> print("Modelo treinado.")
+Modelo treinado.
+>>> modelo = pipeline.fit(train)
+>>> print("Modelo treinado.")
+Modelo treinado.
+>>> from pyspark.ml.evaluation import BinaryClassificationEvaluator
+>>> predicoes = modelo.transform(test)
+>>> avaliador = BinaryClassificationEvaluator(labelCol="label")
+>>> auc = avaliador.evaluate(predicoes)
+>>> print(f"AUC no teste: {auc:.3f}")
+AUC no teste: 0.768
+>>> predicoes.select("transaction_id", "amount", "segment", "label", "prediction", "probability").show(10, truncate=False)
++--------------+---------+---------+-----+----------+------------------------------------------+
+|transaction_id|amount   |segment  |label|prediction|probability                               |
++--------------+---------+---------+-----+----------+------------------------------------------+
+|3             |93.935265|High-Risk|0    |0.0       |[0.9495784233506188,0.05042157664938118]  |
+|7             |140.57378|Premium  |0    |0.0       |[0.9944785942804952,0.005521405719504768] |
+|9             |10.0     |High-Risk|0    |0.0       |[0.9338760980125079,0.06612390198749207]  |
+|14            |81.39329 |Standard |0    |0.0       |[0.975478357338241,0.024521642661759047]  |
+|20            |34.814598|Premium  |0    |0.0       |[0.9950050063834911,0.004994993616508903] |
+|24            |26.91095 |Premium  |0    |0.0       |[0.988864583273263,0.011135416726737013]  |
+|30            |130.24501|Standard |0    |0.0       |[0.9867809580635087,0.01321904193649126]  |
+|36            |89.36897 |Standard |0    |0.0       |[0.956971110973056,0.04302888902694402]   |
+|46            |80.55228 |Standard |0    |0.0       |[0.9631797066350708,0.0368202933649292]   |
+|47            |54.159405|Premium  |0    |0.0       |[0.9969040072034122,0.0030959927965877876]|
++--------------+---------+---------+-----+----------+------------------------------------------+
+only showing top 10 rows
+
+>>> lr_model = modelo.stages[-1]
+>>> coefs = lr_model.coefficients
+>>> nomes = ["amount", "risk_score", "credit_score", "segment_idx"]
+>>> for nome, coef in zip(nomes, coefs):
+"{nome}: {coef:.4f}")...     print(f"{nome}: {coef:.4f}")
+... nomes = ["amount", "risk_score", "credit_score", "segment_idx"]
+"{nome}: {coef:.4f}")  File "<stdin>", line 3
+    nomes = ["amount", "risk_score", "credit_score", "segment_idx"]
+    ^^^^^
+SyntaxError: invalid syntax
+>>> for nome, coef in zip(nomes, coefs):
+...     print(f"{nome}: {coef:.4f}")
+...
+amount: -0.0002
+risk_score: 0.0167
+credit_score: 0.0001
+segment_idx: 1.1849
+>>>
+>>>
+>>> nomes = ["amount", "risk_score", "credit_score", "segment_idx"]
+>>> for nome, coef in zip(nomes, coefs):
+...     print(f"{nome}: {coef:.4f}")
+...
+amount: -0.0002
+risk_score: 0.0167
+credit_score: 0.0001
+segment_idx: 1.1849
+
+>>> print("Fim dos laboratórios Rota B - Modo Python")
+Fim dos laboratórios Rota B - Modo Python
+>>> exit()

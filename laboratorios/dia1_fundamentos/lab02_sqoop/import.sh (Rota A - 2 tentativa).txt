@@ -1,0 +1,342 @@
+Microsoft Windows [versão 10.0.26200.9445]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home
+claudlx@CLAUDENILSON:/home$ cd claudlx
+claudlx@CLAUDENILSON:~$ sudo mysql -u root << 'EOF'
+CREATE DATABASE IF NOT EXISTS bigdata_course;
+USE bigdata_course;
+
+CREATE TABLE customers (
+  customer_id INT PRIMARY KEY, name VARCHAR(255), cpf VARCHAR(20),
+  email VARCHAR(255), segment VARCHAR(50), credit_score INT, created_at DATE
+);
+CREATE TABLE transactions (
+  transaction_id INT PRIMARY KEY, customer_id INT, amount FLOAT,
+  transaction_type VARCHAR(50), timestamp DATETIME, status VARCHAR(50),
+  risk_score FLOAT, is_fraud VARCHAR(10)
+);
+EOF
+[sudo] password for claudlx:
+ERROR 1050 (42S01) at line 4: Table 'customers' already exists
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 23
+Server version: 8.0.46-0ubuntu0.22.04.3 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'SUASENHA';
+GES;ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> exit
+Bye
+claudlx@CLAUDENILSON:~$ mysql -u root -p
+Enter password:
+ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 25
+Server version: 8.0.46-0ubuntu0.22.04.3 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'SUASENHA';
+ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES
+    -> \c
+mysql> exit
+Bye
+claudlx@CLAUDENILSON:~$ passwd
+Changing password for claudlx.
+Current password:
+New password:
+Retype new password:
+passwd: password updated successfully
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 26
+Server version: 8.0.46-0ubuntu0.22.04.3 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'SUASENHA';
+GES;ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'SUASENHA';
+GES;ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'SUASENHA';
+GESERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES
+    -> c/
+    -> \₢
+ERROR:
+Unknown command '\ '.
+    -> \c
+mysql> ALTER USER 'root'@'localhost'IDENTIFIED WITH caching_sha2_password BY 'SUASENHA'; FLUSH PRIVILEGES;
+ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> exit
+Bye
+claudlx@CLAUDENILSON:~$ passwd
+Changing password for claudlx.
+Current password:
+New password:
+Retype new password:
+passwd: password updated successfully
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 27
+Server version: 8.0.46-0ubuntu0.22.04.3 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'SUASENHA';
+GES;ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> SHOW VARIABLES LIKE 'validate_password%';
++-------------------------------------------------+--------+
+| Variable_name                                   | Value  |
++-------------------------------------------------+--------+
+| validate_password.changed_characters_percentage | 0      |
+| validate_password.check_user_name               | ON     |
+| validate_password.dictionary_file               |        |
+| validate_password.length                        | 8      |
+| validate_password.mixed_case_count              | 1      |
+| validate_password.number_count                  | 1      |
+| validate_password.policy                        | MEDIUM |
+| validate_password.special_char_count            | 1      |
++-------------------------------------------------+--------+
+8 rows in set (0.12 sec)
+
+mysql> exit
+Bye
+claudlx@CLAUDENILSON:~$ passwd
+Changing password for claudlx.
+Current password:
+New password:
+Retype new password:
+No password has been supplied.
+New password:
+Retype new password:
+Sorry, passwords do not match.
+passwd: Authentication token manipulation error
+passwd: password unchanged
+claudlx@CLAUDENILSON:~$ passwd
+Changing password for claudlx.
+Current password:
+passwd: Authentication token manipulation error
+passwd: password unchanged
+claudlx@CLAUDENILSON:~$ passwd
+Changing password for claudlx.
+Current password:
+passwd: Authentication token manipulation error
+passwd: password unchanged
+claudlx@CLAUDENILSON:~$ passwd
+Changing password for claudlx.
+Current password:
+New password:
+Retype new password:
+passwd: password updated successfully
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 28
+Server version: 8.0.46-0ubuntu0.22.04.3 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'SUASENHA';
+GES;ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'SUASENHA';
+GESERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES
+    -> \c
+mysql> SHOW VARIABLES LIKE 'validate_password%';
++-------------------------------------------------+--------+
+| Variable_name                                   | Value  |
++-------------------------------------------------+--------+
+| validate_password.changed_characters_percentage | 0      |
+| validate_password.check_user_name               | ON     |
+| validate_password.dictionary_file               |        |
+| validate_password.length                        | 8      |
+| validate_password.mixed_case_count              | 1      |
+| validate_password.number_count                  | 1      |
+| validate_password.policy                        | MEDIUM |
+| validate_password.special_char_count            | 1      |
++-------------------------------------------------+--------+
+8 rows in set (0.01 sec)
+
+mysql> SET GLOBAL validate_password.policy = LOW;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'SUASENHA';
+GES;Query OK, 0 rows affected (0.05 sec)
+
+mysql> exit
+Bye
+claudlx@CLAUDENILSON:~$ mysql -u root -p
+Enter password:
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+claudlx@CLAUDENILSON:~$ mysql -u root -p
+Enter password:
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+claudlx@CLAUDENILSON:~$ exit
+logout
+
+C:\Users\claud>sudo mysql -u root
+O Sudo está desabilitado neste computador. Para habilita-lo, vá para Developer Settings page no aplicativo Configurações
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home
+claudlx@CLAUDENILSON:/home$ cd claudlx
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+[sudo] password for claudlx:
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+claudlx@CLAUDENILSON:~$ exit
+logout
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home
+claudlx@CLAUDENILSON:/home$ cd claudlx
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+[sudo] password for claudlx:
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+claudlx@CLAUDENILSON:~$
+claudlx@CLAUDENILSON:~$
+claudlx@CLAUDENILSON:~$
+claudlx@CLAUDENILSON:~$ exit
+logout
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd \home
+-bash: cd: home: No such file or directory
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd claudlx
+-bash: cd: claudlx: No such file or directory
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home
+claudlx@CLAUDENILSON:/home$ cd claudlx
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+[sudo] password for claudlx:
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+claudlx@CLAUDENILSON:~$ passwd
+Changing password for claudlx.
+Current password:
+New password:
+Retype new password:
+passwd: password updated successfully
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+claudlx@CLAUDENILSON:~$ sudo systemctl stop mysql
+claudlx@CLAUDENILSON:~$ sudo mysqld_safe --skip-grant-tables &
+[1] 1507
+claudlx@CLAUDENILSON:~$ 2026-09-10T20:18:33.565770Z mysqld_safe Logging to '/var/log/mysql/error.log'.
+2026-09-10T20:18:33.570783Z mysqld_safe Directory '/var/run/mysqld' for UNIX socket file don't exists.
+claudlx@CLAUDENILSON:~$ mysql -u root
+
+FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'SUASENHA';
+FLUSH PRIVILEGES;
+EXIT;
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)
+[1]+  Exit 1                  sudo mysqld_safe --skip-grant-tables
+FLUSH: command not found
+ALTER: command not found
+FLUSH: command not found
+EXIT: command not found
+claudlx@CLAUDENILSON:~$ exit
+logout
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home
+claudlx@CLAUDENILSON:/home$ cd claudlx
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+[sudo] password for claudlx:
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)
+claudlx@CLAUDENILSON:~$ sudo systemctl status mysql
+○ mysql.service - MySQL Community Server
+     Loaded: loaded (/lib/systemd/system/mysql.service; enabled; vendor preset: enabled)
+     Active: inactive (dead) since Thu 2026-09-10 17:18:19 -03; 2min 59s ago
+    Process: 198 ExecStartPre=/usr/share/mysql/mysql-systemd-start pre (code=exited, status=0/SUCCESS)
+    Process: 322 ExecStart=/usr/sbin/mysqld (code=exited, status=0/SUCCESS)
+   Main PID: 322 (code=exited, status=0/SUCCESS)
+     Status: "Server shutdown complete"
+        CPU: 54.885s
+
+Sep 10 16:05:27 CLAUDENILSON systemd[1]: Starting MySQL Community Server...
+Sep 10 16:05:35 CLAUDENILSON systemd[1]: Started MySQL Community Server.
+Sep 10 17:18:15 CLAUDENILSON systemd[1]: Stopping MySQL Community Server...
+Sep 10 17:18:19 CLAUDENILSON systemd[1]: mysql.service: Deactivated successfully.
+Sep 10 17:18:19 CLAUDENILSON systemd[1]: Stopped MySQL Community Server.
+Sep 10 17:18:19 CLAUDENILSON systemd[1]: mysql.service: Consumed 54.885s CPU time.
+claudlx@CLAUDENILSON:~$ sudo systemctl start mysql
+claudlx@CLAUDENILSON:~$ sudo systemctl status mysql
+● mysql.service - MySQL Community Server
+     Loaded: loaded (/lib/systemd/system/mysql.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2026-09-10 17:22:02 -03; 37s ago
+    Process: 1733 ExecStartPre=/usr/share/mysql/mysql-systemd-start pre (code=exited, status=0/SUCCESS)
+   Main PID: 1741 (mysqld)
+     Status: "Server is operational"
+      Tasks: 38 (limit: 4520)
+     Memory: 448.6M
+        CPU: 2.270s
+     CGroup: /system.slice/mysql.service
+             └─1741 /usr/sbin/mysqld
+
+Sep 10 17:21:57 CLAUDENILSON systemd[1]: Starting MySQL Community Server...
+Sep 10 17:22:02 CLAUDENILSON systemd[1]: Started MySQL Community Server.
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)

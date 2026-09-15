@@ -1,0 +1,112 @@
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import duckdb
+n = duckdb.connect()>>> con = duckdb.connect()
+>>> con.sql("""
+... CREATE VIEW raw_transactions AS
+... SELECT *, strftime(timestamp::TIMESTAMP, '%Y')::INT AS year,
+...           strftime(timestamp::TIMESTAMP, '%m')::INT AS month
+... FROM read_csv_auto('bigdata/raw/transactions/transactions_synthetic.csv')
+... """)
+>>> con.sql("SELECT DISTINCT year, month FROM raw_transactions ORDER BY 1,2").show()
+┌───────┬───────┐
+│ year  │ month │
+│ int32 │ int32 │
+├───────┼───────┤
+│  2023 │     1 │
+│  2023 │     2 │
+│  2023 │     3 │
+│  2023 │     4 │
+│  2023 │     5 │
+│  2023 │     6 │
+│  2023 │     7 │
+│  2023 │     8 │
+│  2023 │     9 │
+│  2023 │    10 │
+│    ·  │     · │
+│    ·  │     · │
+│    ·  │     · │
+│  2024 │     3 │
+│  2024 │     4 │
+│  2024 │     5 │
+│  2024 │     6 │
+│  2024 │     7 │
+│  2024 │     8 │
+│  2024 │     9 │
+│  2024 │    10 │
+│  2024 │    11 │
+│  2024 │    12 │
+└───────┴───────┘
+     24 rows
+   (20 shown)
+
+>>> con.sql("""
+... COPY raw_transactions TO 'bigdata/silver/transactions_particionado'
+... (FORMAT PARQUET, PARTITION_BY (year, month))
+... """)
+>>> find bigdata/silver/transactions_particionado -maxdepth 2 | head -10
+  File "<stdin>", line 1
+    find bigdata/silver/transactions_particionado -maxdepth 2 | head -10
+         ^^^^^^^
+SyntaxError: invalid syntax
+>>> find bigdata/silver/transactions_particionado -maxdepth 2 | head -10
+  File "<stdin>", line 1
+    find bigdata/silver/transactions_particionado -maxdepth 2 | head -10
+         ^^^^^^^
+SyntaxError: invalid syntax
+>>> import time
+UNT(*) FROM raw_transactions WHERE month = 1").show()
+print("sem partição:", time.time() - t0, "s")>>>
+>>> t0 = time.time()
+>>> con.sql("SELECT COUNT(*) FROM raw_transactions WHERE month = 1").show()
+┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│         8461 │
+└──────────────┘
+
+>>> print("sem partição:", time.time() - t0, "s")
+sem partição: 25.613171577453613 s
+>>> t0 = time.time()
+ECT COUNT(*) FROM read_parquet(
+>>> con.sql("""
+  'bigdata/silve... SELECT COUNT(*) FROM read_parquet(
+...   'bigdata/silver/transactions_particionado/year=*/month=1/*.parquet'
+... )""").show()
+rtição:", time.time() - t0, "s")┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│         8461 │
+└──────────────┘
+
+>>> print("com partição:", time.time() - t0, "s")
+com partição: 1.5798401832580566 s
+>>> from pathlib import Path
+(p.relative_to(base_path).parts) < max_depth
+)
+
+for count, path in enumerate(items):
+    if count >= 10:
+        break
+    print(path)
+>>>
+>>> base_path = Path("bigdata/silver/transactions_particionado")
+>>>
+>>> max_depth = 2
+>>>
+>>> items = (
+...     p for p in base_path.rglob("*")
+...     if len(p.relative_to(base_path).parts) < max_depth
+... )
+>>>
+>>> for count, path in enumerate(items):
+...     if count >= 10:
+...         break
+...     print(path)
+...
+bigdata/silver/transactions_particionado/year=2023
+bigdata/silver/transactions_particionado/year=2024
+>>> exit()

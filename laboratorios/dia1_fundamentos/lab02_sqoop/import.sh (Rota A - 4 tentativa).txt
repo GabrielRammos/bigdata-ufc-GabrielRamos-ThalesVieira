@@ -1,0 +1,352 @@
+Microsoft Windows [versão 10.0.26200.9445]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 6.18.33.2-microsoft-standard-WSL2 x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Fri Sep 11 11:21:43 -03 2026
+
+  System load:  0.77                Processes:             60
+  Usage of /:   1.0% of 1006.85GB   Users logged in:       0
+  Memory usage: 22%                 IPv4 address for eth0: 172.20.184.193
+  Swap usage:   0%
+
+ * Canonical Workshop gives developers fast, composable, reproducible, and
+   secure developer environments that are perfect for agentic workflows.
+
+   https://ubuntu.com/workshop
+
+This message is shown once a day. To disable it please create the
+/home/claudlx/.hushlogin file.
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home/claudlx
+claudlx@CLAUDENILSON:~$ sudo mysql -u root << 'EOF'
+CREATE DATABASE IF NOT EXISTS bigdata_course;
+USE bigdata_course;
+
+CREATE TABLE customers (
+  customer_id INT PRIMARY KEY, name VARCHAR(255), cpf VARCHAR(20),
+  email VARCHAR(255), segment VARCHAR(50), credit_score INT, created_at DATE
+);
+CREATE TABLE transactions (
+  transaction_id INT PRIMARY KEY, customer_id INT, amount FLOAT,
+  transaction_type VARCHAR(50), timestamp DATETIME, status VARCHAR(50),
+  risk_score FLOAT, is_fraud VARCHAR(10)
+);
+EOF
+[sudo] password for claudlx:
+claudlx@CLAUDENILSON:~$ sudo mysql --local-infile=1 -u root bigdata_course -e "
+LOAD DATA LOCAL INFILE 'customers_synthetic.csv'
+INTO TABLE customers FIELDS TERMINATED BY ',' IGNORE 1 ROWS;"
+
+sudo mysql --local-infile=1 -u root bigdata_course -e "
+LOAD DATA LOCAL INFILE 'transactions_synthetic.csv'
+INTO TABLE transactions FIELDS TERMINATED BY ',' IGNORE 1 ROWS;"
+ERROR 3948 (42000) at line 2: Loading local data is disabled; this must be enabled on both the client and server sides
+ERROR 3948 (42000) at line 2: Loading local data is disabled; this must be enabled on both the client and server sides
+claudlx@CLAUDENILSON:~$ sudo mysql --local-infile=1 -u root bigdata_course
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 11
+Server version: 8.0.46-0ubuntu0.22.04.4 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> SET GLOBAL local_infile = 1;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> exit
+Bye
+claudlx@CLAUDENILSON:~$ sudo mysql --local-infile=1 -u root bigdata_course -e "
+LOAD DATA LOCAL INFILE 'customers_synthetic.csv'
+INTO TABLE customers FIELDS TERMINATED BY ',' IGNORE 1 ROWS;"
+
+sudo mysql --local-infile=1 -u root bigdata_course -e "
+LOAD DATA LOCAL INFILE 'transactions_synthetic.csv'
+INTO TABLE transactions FIELDS TERMINATED BY ',' IGNORE 1 ROWS;"
+claudlx@CLAUDENILSON:~$ sudo mysql -u root bigdata_course -e "SELECT COUNT(*) FROM customers;"
+sudo mysql -u root bigdata_course -e "SELECT COUNT(*) FROM transactions;"
++----------+
+| COUNT(*) |
++----------+
+|     9993 |
++----------+
++----------+
+| COUNT(*) |
++----------+
+|   100000 |
++----------+
+claudlx@CLAUDENILSON:~$ sudo mysql -u root bigdata_course -e "SELECT is_fraud, COUNT(*) FROM transactions GROUP BY is_fraud;"
++----------+----------+
+| is_fraud | COUNT(*) |
++----------+----------+
+| False    |    98167 |
+| True     |     1833 |
++----------+----------+
+claudlx@CLAUDENILSON:~$ sudo mysql -u root -e "SELECT user, host, plugin FROM mysql.user WHERE user='root';"
++------+-----------+-------------+
+| user | host      | plugin      |
++------+-----------+-------------+
+| root | localhost | auth_socket |
++------+-----------+-------------+
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 18
+Server version: 8.0.46-0ubuntu0.22.04.4 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'SUASENHA';
+ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> exit
+Bye
+claudlx@CLAUDENILSON:~$ mysql -h 127.0.0.1 -u root -pSUASENHA bigdata_course -e "SELECT 1;"
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+claudlx@CLAUDENILSON:~$ sudo mysql -u root -e "SELECT VERSION();"
++-------------------------+
+| VERSION()               |
++-------------------------+
+| 8.0.46-0ubuntu0.22.04.4 |
++-------------------------+
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 21
+Server version: 8.0.46-0ubuntu0.22.04.4 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'SUASENHA';
+GESERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> FLUSH PRIVILEGES
+    -> exit
+    -> /c
+    -> c/
+    ->
+    -> c/
+    -> exit
+    -> \c
+mysql> exit
+Bye
+claudlx@CLAUDENILSON:~$ sudo mysql -u root -e "SELECT user, host, plugin FROM mysql.user WHERE user='root';"
++------+-----------+-------------+
+| user | host      | plugin      |
++------+-----------+-------------+
+| root | localhost | auth_socket |
++------+-----------+-------------+
+claudlx@CLAUDENILSON:~$ mysql -h 127.0.0.1 -u root -pSUASENHA bigdata_course -e "SELECT 1;"
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 24
+Server version: 8.0.46-0ubuntu0.22.04.4 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'password';
+S ON *.* TO 'new_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'new_user'@'localhost';
+ERROR 1410 (42000): You are not allowed to create a user with GRANT
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> EXIT;
+Bye
+claudlx@CLAUDENILSON:~$ sudo mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 25
+Server version: 8.0.46-0ubuntu0.22.04.4 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'SUASENHA'; FLUSH PRIVILEGES
+ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
+    -> validate_password.policy=LOW
+    -> \c
+mysql> validate_password.policy=LOW
+    -> \c
+mysql> exit
+Bye
+claudlx@CLAUDENILSON:~$ sudo systemctl restart mysql
+[sudo] password for claudlx:
+
+claudlx@CLAUDENILSON:~$ mysql -h 127.0.0.1 -u root -pSUASENHA bigdata_course -e "SELECT 1;"
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+claudlx@CLAUDENILSON:~$ sudo mysql -u root -e "SELECT VERSION();"
++-------------------------+
+| VERSION()               |
++-------------------------+
+| 8.0.46-0ubuntu0.22.04.4 |
++-------------------------+
+claudlx@CLAUDENILSON:~$ sudo mysql -u root -e "SELECT user, host, plugin FROM mysql.user WHERE user='root';"
++------+-----------+-------------+
+| user | host      | plugin      |
++------+-----------+-------------+
+| root | localhost | auth_socket |
++------+-----------+-------------+
+claudlx@CLAUDENILSON:~$ jps
+1283 Jps
+claudlx@CLAUDENILSON:~$ sqoop version
+Warning: /opt/sqoop/../hbase does not exist! HBase imports will fail.
+Please set $HBASE_HOME to the root of your HBase installation.
+Warning: /opt/sqoop/../hcatalog does not exist! HCatalog jobs will fail.
+Please set $HCAT_HOME to the root of your HCatalog installation.
+Warning: /opt/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+Warning: /opt/sqoop/../zookeeper does not exist! Accumulo imports will fail.
+Please set $ZOOKEEPER_HOME to the root of your Zookeeper installation.
+2026-09-11 12:24:50,617 INFO sqoop.Sqoop: Running Sqoop version: 1.4.7
+Sqoop 1.4.7
+git commit id 2328971411f57f0cb683dfb79d19d4d19d185dd8
+Compiled by maugli on Thu Dec 21 15:59:58 STD 2017
+claudlx@CLAUDENILSON:~$ echo $HADOOP_HOME
+/opt/hadoop
+claudlx@CLAUDENILSON:~$ cat $HADOOP_HOME/etc/hadoop/mapred-site.xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+</configuration>
+claudlx@CLAUDENILSON:~$ nano $HADOOP_HOME/etc/hadoop/mapred-site.xml
+claudlx@CLAUDENILSON:~$ nano $HADOOP_HOME/etc/hadoop/mapred-site.xml
+claudlx@CLAUDENILSON:~$ echo $H
+$HADOOP_HOME                  $HISTCONTROL                  $HOME
+$HDFS_DATANODE_USER           $HISTFILE                     $HOSTNAME
+$HDFS_NAMENODE_USER           $HISTFILESIZE                 $HOSTTYPE
+$HDFS_SECONDARYNAMENODE_USER  $HISTSIZE
+$HISTCMD                      $HIVE_HOME
+claudlx@CLAUDENILSON:~$ echo $HADOOP_HOME
+/opt/hadoop
+claudlx@CLAUDENILSON:~$ nano /opt/hadoop/
+LICENSE-binary   NOTICE.txt       data/            lib/             logs/
+LICENSE.txt      README.txt       etc/             libexec/         sbin/
+NOTICE-binary    bin/             include/         licenses-binary/ share/
+claudlx@CLAUDENILSON:~$ nano /opt/hadoop/etc/hadoop/
+capacity-scheduler.xml             hdfs-site.xml                      mapred-queues.xml.template
+configuration.xsl                  httpfs-env.sh                      mapred-site.xml
+container-executor.cfg             httpfs-log4j.properties            shellprofile.d/
+core-site.xml                      httpfs-site.xml                    ssl-client.xml.example
+hadoop-env.cmd                     kms-acls.xml                       ssl-server.xml.example
+hadoop-env.sh                      kms-env.sh                         user_ec_policies.xml.template
+hadoop-env.sh.bak.20260822_134655  kms-log4j.properties               workers
+hadoop-metrics2.properties         kms-site.xml                       yarn-env.cmd
+hadoop-policy.xml                  log4j.properties                   yarn-env.sh
+hadoop-user-functions.sh.example   mapred-env.cmd                     yarn-site.xml
+hdfs-rbf-site.xml                  mapred-env.sh                      yarnservice-log4j.properties
+claudlx@CLAUDENILSON:~$ nano /opt/hadoop/etc/hadoop/
+capacity-scheduler.xml             hdfs-site.xml                      mapred-queues.xml.template
+configuration.xsl                  httpfs-env.sh                      mapred-site.xml
+container-executor.cfg             httpfs-log4j.properties            shellprofile.d/
+core-site.xml                      httpfs-site.xml                    ssl-client.xml.example
+hadoop-env.cmd                     kms-acls.xml                       ssl-server.xml.example
+hadoop-env.sh                      kms-env.sh                         user_ec_policies.xml.template
+hadoop-env.sh.bak.20260822_134655  kms-log4j.properties               workers
+hadoop-metrics2.properties         kms-site.xml                       yarn-env.cmd
+hadoop-policy.xml                  log4j.properties                   yarn-env.sh
+hadoop-user-functions.sh.example   mapred-env.cmd                     yarn-site.xml
+hdfs-rbf-site.xml                  mapred-env.sh                      yarnservice-log4j.properties
+claudlx@CLAUDENILSON:~$ nano /opt/hadoop/etc/hadoop/mapred-site.xml
+claudlx@CLAUDENILSON:~$ nano /opt/hadoop/etc/hadoop/mapred-site.xml
+claudlx@CLAUDENILSON:~$ stop-yarn.sh && start-yarn.sh
+Stopping nodemanagers
+Stopping resourcemanager
+Starting resourcemanager
+Starting nodemanagers
+claudlx@CLAUDENILSON:~$ jps
+1845 ResourceManager
+1960 NodeManager
+2301 Jps
+claudlx@CLAUDENILSON:~$ sqoop import \
+  --connect jdbc:mysql://localhost:3306/bigdata_course \
+  --username root --password SUASENHA \
+  --table customers \
+  --columns "customer_id,name,cpf,email,segment,credit_score,created_at" \
+  --target-dir /user/bigdata/raw/customers \
+  --delete-target-dir \
+  --null-string '\\N' --null-non-string '\\N' \
+  -m 4
+Warning: /opt/sqoop/../hbase does not exist! HBase imports will fail.
+Please set $HBASE_HOME to the root of your HBase installation.
+Warning: /opt/sqoop/../hcatalog does not exist! HCatalog jobs will fail.
+Please set $HCAT_HOME to the root of your HCatalog installation.
+Warning: /opt/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+Warning: /opt/sqoop/../zookeeper does not exist! Accumulo imports will fail.
+Please set $ZOOKEEPER_HOME to the root of your Zookeeper installation.
+2026-09-11 12:43:42,494 INFO sqoop.Sqoop: Running Sqoop version: 1.4.7
+2026-09-11 12:43:42,547 WARN tool.BaseSqoopTool: Setting your password on the command-line is insecure. Consider using -P instead.
+Exception in thread "main" java.lang.NoClassDefFoundError: org/apache/commons/lang/StringUtils
+        at org.apache.sqoop.tool.BaseSqoopTool.validateHiveOptions(BaseSqoopTool.java:1583)
+        at org.apache.sqoop.tool.ImportTool.validateOptions(ImportTool.java:1178)
+        at org.apache.sqoop.Sqoop.run(Sqoop.java:137)
+        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:82)
+        at org.apache.sqoop.Sqoop.runSqoop(Sqoop.java:183)
+        at org.apache.sqoop.Sqoop.runTool(Sqoop.java:234)
+        at org.apache.sqoop.Sqoop.runTool(Sqoop.java:243)
+        at org.apache.sqoop.Sqoop.main(Sqoop.java:252)
+Caused by: java.lang.ClassNotFoundException: org.apache.commons.lang.StringUtils
+        at java.net.URLClassLoader.findClass(URLClassLoader.java:387)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:418)
+        at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:352)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:351)
+        ... 8 more
+claudlx@CLAUDENILSON:~$ exit
+logout

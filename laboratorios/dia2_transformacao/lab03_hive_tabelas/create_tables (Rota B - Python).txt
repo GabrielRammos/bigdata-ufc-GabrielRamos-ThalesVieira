@@ -1,0 +1,103 @@
+Microsoft Windows [versão 10.0.26200.9445]
+(c) Microsoft Corporation. Todos os direitos reservados.
+
+C:\Users\claud>wsl.exe -d ubuntu-22.04
+claudlx@CLAUDENILSON:/mnt/c/Users/claud$ cd /home/claudlx
+claudlx@CLAUDENILSON:~$ sudo python pip install duckdb --user
+[sudo] password for claudlx:
+sudo: python: command not found
+claudlx@CLAUDENILSON:~$ sudo python3 pip install duckdb
+python3: can't open file '/home/claudlx/pip': [Errno 2] No such file or directory
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import duckdb
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'duckdb'
+>>> pip install duckdb --user
+'SELECT transaction_type, COUNT(*) FROM read_csv_auto(\'transactions_synthetic.csv\') GROUP BY 1').show()
+"  File "<stdin>", line 1
+    pip install duckdb --user
+        ^^^^^^^
+SyntaxError: invalid syntax
+>>> python3 -c "
+  File "<stdin>", line 1
+    python3 -c "
+               ^
+SyntaxError: unterminated string literal (detected at line 1)
+>>> import duckdb
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'duckdb'
+>>> duckdb.sql('SELECT transaction_type, COUNT(*) FROM read_csv_auto(\'transactions_synthetic.csv\') GROUP BY 1').show()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'duckdb' is not defined
+>>> pip install duckdb
+  File "<stdin>", line 1
+    pip install duckdb
+        ^^^^^^^
+SyntaxError: invalid syntax
+>>> python3 pip install duckdb
+  File "<stdin>", line 1
+    python3 pip install duckdb
+            ^^^
+SyntaxError: invalid syntax
+>>> exit
+Use exit() or Ctrl-D (i.e. EOF) to exit
+>>> exit()
+claudlx@CLAUDENILSON:~$ sudo pip install duckdb
+Collecting duckdb
+  Downloading duckdb-1.5.5-cp310-cp310-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (21.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 21.5/21.5 MB 9.0 MB/s eta 0:00:00
+Installing collected packages: duckdb
+Successfully installed duckdb-1.5.5
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+claudlx@CLAUDENILSON:~$ python3 -c "
+import duckdb
+duckdb.sql('SELECT transaction_type, COUNT(*) FROM read_csv_auto(\'transactions_synthetic.csv\') GROUP BY 1').show()
+"
+┌──────────────────┬──────────────┐
+│ transaction_type │ count_star() │
+│     varchar      │    int64     │
+├──────────────────┼──────────────┤
+│ compra           │        49782 │
+│ saque            │        19936 │
+│ pagamento        │        10180 │
+│ transferencia    │        20102 │
+└──────────────────┴──────────────┘
+
+claudlx@CLAUDENILSON:~$ python3
+Python 3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import duckdb
+n = duckdb.connect()>>> con = duckdb.connect()
+>>> con.sql("""
+... CREATE VIEW raw_customers AS
+... SELECT * FROM read_csv_auto('bigdata/raw/customers/customers_synthetic.csv')
+... """)
+>>> con.sql("SELECT COUNT(*) FROM raw_customers").show()
+┌──────────────┐
+│ count_star() │
+│    int64     │
+├──────────────┤
+│         9993 │
+└──────────────┘
+
+>>> import os
+>>> con.sql("CREATE TABLE teste_managed AS SELECT * FROM raw_customers LIMIT 5")
+.sql("DROP TABLE teste_managed")>>> con.sql("DROP TABLE teste_managed")
+>>> print("Arquivo original ainda existe?", os.path.exists('bigdata/raw/customers/customers_synthetic.csv'))
+Arquivo original ainda existe? True
+>>> print("""
+... No DuckDB/pandas, você SEMPRE trabalha como se fosse External:
+... o arquivo fonte nunca é apagado por um DROP.
+... No Hive de verdade, Managed table apaga o arquivo — cuidado redobrado lá.
+... """)
+
+No DuckDB/pandas, você SEMPRE trabalha como se fosse External:
+o arquivo fonte nunca é apagado por um DROP.
+No Hive de verdade, Managed table apaga o arquivo — cuidado redobrado lá.
+
+>>> exit()
