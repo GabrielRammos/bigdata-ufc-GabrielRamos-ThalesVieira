@@ -1,3 +1,6 @@
+**Disciplina**: Big Data
+**Alunos**: Gabriel Ramos e Thales Vieira 
+
 # Laboratorios - Explicação da Execução
 
 # Primeiro Grande Problema da Rota A - 1 laboratório
